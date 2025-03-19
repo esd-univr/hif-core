@@ -453,7 +453,7 @@ int CCheckDirVisitor::visitCNode(CNode &rN)
                     if (!(fCDir.make_dirs())) {
                         nRet = 1;
                     }
-                    // Create CSession::Suffix_T sub-directories
+                    // Create CSession::Suffix sub-directories
                     for (int nSuff = CSession::SRC; nSuff <= CSession::DOC; nSuff++) {
                         application_utils::FileStructure fSDir(fCDir, std::string(CSession::CSuffix[nSuff]));
                         if (!(fSDir.make_dirs())) {

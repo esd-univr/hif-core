@@ -220,22 +220,36 @@ protected:
     /// @{
 
     /// @brief Parses a single line of the configuration file.
+    /// @param line The line to parse.
+    /// @return False on error.
     auto _parseLine(const std::string &line) -> bool;
 
     /// @brief Parses a comment line.
+    /// @param s The comment line.
+    /// @return False on error.
     static auto _parseComment(const std::string &s) -> bool;
 
     /// @brief Parses a section header.
+    /// @param s The section header.
+    /// @return False on error.
     auto _parseSection(const std::string &s) -> bool;
 
     /// @brief Parses a directive line.
+    /// @param s The directive line.
+    /// @return False on error.
     auto _parseDirective(const std::string &s) -> bool;
 
     /// @brief Parses a variable line.
+    /// @param s The variable line.
+    /// @return False on error.
     auto _parseVariable(const std::string &s) -> bool;
 
     /// @brief Parses values associated with a key.
+    /// @param key The key to associate the values with.
+    /// @param s The string containing the values.
+    /// @param isDirective True if the key is a directive, false otherwise.
     void _parseValues(const std::string &key, const std::string &s, bool isDirective);
+    
     /// @}
 
     Sections _sections;               ///< Map of sections in the configuration.

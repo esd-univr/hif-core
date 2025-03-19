@@ -16,11 +16,11 @@ namespace application_utils
 {
 
 /// @brief Returns the current HIF tag.
-
+/// @return The current HIF tag.
 auto getHIFVersion() -> std::string;
 
 /// @brief prints a banner with current HIF infos.
-
+/// @param tool_name The name of the tool.
 void dumpVersion(std::string const &tool_name);
 
 } // namespace application_utils

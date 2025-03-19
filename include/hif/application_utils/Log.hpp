@@ -74,28 +74,25 @@ using WarningInfoSet = std::set<WarningInfo>;
 
 /// @brief Gets the application name (i.e., a specific front-end/back-end).
 /// @return The name of application set (if any).
-
 auto getApplicationName() -> std::string;
 
 /// @brief Gets the component name (i.e., a part of the set front-end/back-end).
 /// @return The name of component set (if any).
-
 auto getComponentName() -> std::string;
 
 /// @brief Initializes the log messages for a component, setting the application
 /// name and component name. Current values are stored.
-
+/// @param appName The name of the application.
+/// @param compName The name of the component.
 void initializeLogHeader(std::string appName, std::string compName);
 
 /// @brief Restores the previous values for application and component name, if present.
-
 void restoreLogHeader();
 
 /// @brief Prints information message.
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the actual message to print.
-
 void _hif_internal_messageInfo(std::string file, unsigned int line, std::string message);
 
 /// @brief Prints warning message.
@@ -106,7 +103,6 @@ void _hif_internal_messageInfo(std::string file, unsigned int line, std::string 
 /// message concern an error). It includes also information about source
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
-
 void _hif_internal_messageWarning(
     std::string file,
     unsigned int line,
@@ -119,14 +115,12 @@ void _hif_internal_messageWarning(
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the actual message to print.
-
 void _hif_internal_raiseUniqueWarning(std::string file, unsigned int line, std::string message);
 
 /// @brief Prints all the unique warning messages collected until now.
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the optional message to print.
-
 void _hif_internal_printUniqueWarnings(std::string file, unsigned int line, std::string message);
 
 /// @brief Prints an error message, which causes exit.
@@ -137,7 +131,6 @@ void _hif_internal_printUniqueWarnings(std::string file, unsigned int line, std:
 /// message concern an error). It includes also information about source
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
-
 void _hif_internal_messageError [[noreturn]] (
     std::string file,
     unsigned int line,
@@ -154,7 +147,6 @@ void _hif_internal_messageError [[noreturn]] (
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
 /// @param dontPrintCondition indicates a boolean condition to suppress the print.
-
 void _hif_internal_messageDebug(
     std::string file,
     unsigned int line,
@@ -172,7 +164,6 @@ void _hif_internal_messageDebug(
 /// message concern an error). It includes also information about source
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
-
 void _hif_internal_messageAssert [[noreturn]] (
     std::string file,
     unsigned int line,
@@ -187,7 +178,6 @@ void _hif_internal_messageAssert [[noreturn]] (
 /// @param condition Warnings are printed only if condition holds.
 /// @param message is the actual message to print.
 /// @param objList The list of involved objects.
-
 void _hif_internal_messageWarningList(
     std::string file,
     unsigned int line,
@@ -202,7 +192,6 @@ void _hif_internal_messageWarningList(
 /// @param condition Warnings are printed only if condition holds.
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
-
 void _hif_internal_messageWarningList(
     std::string file,
     unsigned int line,
@@ -217,7 +206,6 @@ void _hif_internal_messageWarningList(
 /// @param condition Warnings are printed only if condition holds.
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
-
 void _hif_internal_messageWarningList(
     std::string file,
     unsigned int line,
@@ -232,7 +220,6 @@ void _hif_internal_messageWarningList(
 /// @param condition Warnings are printed only if condition holds.
 /// @param message is the actual message to print.
 /// @param objList The list of involved objects.
-
 void _hif_internal_messageWarningList(
     std::string file,
     unsigned int line,
@@ -247,7 +234,6 @@ void _hif_internal_messageWarningList(
 /// @param condition Warnings are printed only if condition holds.
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
-
 void _hif_internal_messageWarningList(
     std::string file,
     unsigned int line,
@@ -257,12 +243,10 @@ void _hif_internal_messageWarningList(
 
 /// @brief Sets the verbose printing flag.
 /// @param isVerbose The value.
-
 void setVerboseLog(bool isVerbose);
 
 /// @brief Gets the verbose printing flag.
 /// @return The value.
-
 auto isVerboseLog() -> bool;
 
 /// @name Logging and Debugging Macros
