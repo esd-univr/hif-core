@@ -1274,7 +1274,7 @@ void _printDetails(
     }
 }
 
-void _printReport(std::ostream &outStream) { outStream << "\nPlease report issues to help@hifsuite.com" << std::endl; }
+void _printReport(std::ostream &outStream) { outStream << "\nPlease report issues to enrico.fraccaroli@univr.it" << std::endl; }
 
 void _message(
     const std::string file,

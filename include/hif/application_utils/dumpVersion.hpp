@@ -17,9 +17,9 @@ namespace application_utils
 
 /// @brief Returns the current HIF tag.
 
-auto getHIFSuiteVersion() -> std::string;
+auto getHIFVersion() -> std::string;
 
-/// @brief prints a banner with current HIFSuite infos.
+/// @brief prints a banner with current HIF infos.
 
 void dumpVersion(std::string const &tool_name);
 

@@ -47,7 +47,7 @@ public:
     /// @return The string representing the class name.
     ClassId getClassId() const;
 
-    /// @brief Struct containing information about the current version of HIFSuite.
+    /// @brief Struct containing information about the current version of HIF.
     struct VersionInfo {
         typedef unsigned long long VersionNumber;
 
@@ -57,7 +57,7 @@ public:
         VersionInfo &operator=(VersionInfo other);
         void swap(VersionInfo &other);
 
-        /// @brief The HIFSuite release version.
+        /// @brief The HIF release version.
         std::string release;
 
         /// @brief The tool that generated the HIF description.

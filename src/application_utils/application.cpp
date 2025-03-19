@@ -14,21 +14,21 @@
 static inline void segfaultHandler(const int /*signal*/)
 {
     std::cerr << "-- FATAL_ERROR (SF): detected unexpected statement inside the design.\n"
-              << "   Please contact the HIFSuite support team.\n\n";
+              << "   Please contact the HIF support team.\n\n";
     std::exit(EXIT_FAILURE);
 }
 
 static inline void fpeHandler(const int /*signal*/)
 {
     std::cerr << "-- FATAL_ERROR (FP): detected unexpected expression inside the design.\n"
-              << "   Please contact the HIFSuite support team.\n\n";
+              << "   Please contact the HIF support team.\n\n";
     std::exit(EXIT_FAILURE);
 }
 
 static inline void newHandler()
 {
     std::cerr << "-- FATAL_ERROR (NH): detected unexpected data inside the design.\n"
-              << "   Please contact the HIFSuite support team.\n\n";
+              << "   Please contact the HIF support team.\n\n";
     std::exit(EXIT_FAILURE);
 }
 

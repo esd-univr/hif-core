@@ -32,7 +32,7 @@
 #define HIF_64 1
 #elif (defined _WIN32)
 #define HIF_64 0
-#error "HIFSuite requires to be compiled with 64-bit compiler"
+#error "HIF requires to be compiled with 64-bit compiler"
 #else
 #error "Unexpected architecture"
 #endif
@@ -51,7 +51,7 @@
 #define HIF_64 1
 #elif (defined __i386__)
 #define HIF_64 0
-#error "HIFSuite requires to be compiled with 64-bit compiler"
+#error "HIF requires to be compiled with 64-bit compiler"
 #else
 #error "Unexpected architecture"
 #endif

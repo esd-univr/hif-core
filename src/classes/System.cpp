@@ -48,7 +48,7 @@ void System::setVersionInfo(const VersionInfo &info) { _version = info; }
 System::VersionInfo System::getVersionInfo() const { return _version; }
 
 System::VersionInfo::VersionInfo()
-    : release(hif::application_utils::getHIFSuiteVersion())
+    : release(hif::application_utils::getHIFVersion())
     , tool("")
     , generationDate("")
     , formatVersionMajor(HIF_XML_FORMAT_VERSION_INFO_MAJOR)

@@ -54,7 +54,7 @@ void dumpVersion(std::string const &tool_name)
 #endif
 }
 
-auto getHIFSuiteVersion() -> std::string { return HIF_VERSION; }
+auto getHIFVersion() -> std::string { return HIF_VERSION; }
 
 } // namespace application_utils
 } // namespace hif

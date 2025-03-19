@@ -11,7 +11,7 @@
 #include <ctime>
 #include <sys/types.h>
 
-static_assert(sizeof(void *) == 8, "HIFSuite requires to be compiled with 64-bit compiler");
+static_assert(sizeof(void *) == 8, "HIF requires to be compiled with 64-bit compiler");
 
 #if defined(_WIN32)
 #include <direct.h>
