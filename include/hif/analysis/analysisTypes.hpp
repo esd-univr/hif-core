@@ -1,9 +1,10 @@
 /// @file analysisTypes.hpp
 /// @brief Defines types and structures for analyzing processes and handling
 /// template parameter fixes.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 

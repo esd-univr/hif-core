@@ -3,9 +3,10 @@
 /// @details Provides utility functions to traverse and apply user-defined operations
 /// on all objects in a subtree or a list of subtrees in a HIF (Hardware Intermediate Format)
 /// system description. These functions support custom operations via function pointers.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 

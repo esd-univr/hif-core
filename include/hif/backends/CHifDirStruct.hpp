@@ -1,8 +1,9 @@
 /// @file CHifDirStruct.hpp
 /// @brief HIF backend directory structure.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 
@@ -130,7 +131,7 @@ public:
     DirectoryStatus Apply(hif::DesignUnit &rduTgt, const char *pcLine, Suffix rSuff = Suffix::SRC);
 
     /// @brief Apply a system command inside the directory done by Hif hif::Object + Suffix rSuff
-    /// @param rInst Hif object to treat.
+    /// @param rvTgt Hif object to treat.
     /// @param pcLine command to apply.
     /// @param rSuff subdir defined in the list {SRC, INC, DOC, LIB, EXE, OBJ}.
     /// @return the status of the directory structure.

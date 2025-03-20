@@ -2,9 +2,10 @@
 /// @brief Enumerations and utility functions for HIF data structures.
 /// @details Provides enums for range directions, port directions, bit constants,
 /// and operators, along with helper functions to convert between enums and strings.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 
