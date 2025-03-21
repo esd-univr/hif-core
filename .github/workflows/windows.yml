@@ -35,25 +35,20 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Step: Clone the project.
     - name: Checkout Repository
       uses: actions/checkout@v4
     
-    # Step: Set up vcpkg.
     - name: Set up vcpkg
       uses: lukka/run-vcpkg@v11
       
     - name: Install POCO with vcpkg
       run: vcpkg install poco
 
-    # Step: Configure Project.
     - name: Configure Project
       run: cmake -B build -DBUILD_TESTS=ON -DBUILD_EXAMPLES=ON -DWARNINGS_AS_ERRORS=ON -DSTRICT_WARNINGS=ON -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
-    # Step: Build Project.
     - name: Build Project
       run: cmake --build build --config Debug --parallel 2
 
-    # Step: Run Tests.
     - name: Run Tests
       run: ctest --test-dir build --build-config Debug --verbose
