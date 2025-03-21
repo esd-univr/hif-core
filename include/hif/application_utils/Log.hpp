@@ -85,7 +85,7 @@ auto getComponentName() -> std::string;
 /// name and component name. Current values are stored.
 /// @param appName The name of the application.
 /// @param compName The name of the component.
-void initializeLogHeader(std::string appName, std::string compName);
+void initializeLogHeader(const std::string &appName, const std::string &compName);
 
 /// @brief Restores the previous values for application and component name, if present.
 void restoreLogHeader();
@@ -94,7 +94,7 @@ void restoreLogHeader();
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the actual message to print.
-void _hif_internal_messageInfo(std::string file, unsigned int line, std::string message);
+void _hif_internal_messageInfo(const std::string &file, unsigned int line, const std::string &message);
 
 /// @brief Prints warning message.
 /// @param file is expanded by macro to the raising point of the message.
@@ -105,9 +105,9 @@ void _hif_internal_messageInfo(std::string file, unsigned int line, std::string 
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
 void _hif_internal_messageWarning(
-    std::string file,
+    const std::string &file,
     unsigned int line,
-    std::string message,
+    const std::string &message,
     hif::Object *involvedObject             = nullptr,
     hif::semantics::ILanguageSemantics *sem = nullptr);
 
@@ -116,13 +116,13 @@ void _hif_internal_messageWarning(
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the actual message to print.
-void _hif_internal_raiseUniqueWarning(std::string file, unsigned int line, std::string message);
+void _hif_internal_raiseUniqueWarning(const std::string &file, unsigned int line, const std::string &message);
 
 /// @brief Prints all the unique warning messages collected until now.
 /// @param file is expanded by macro to the raising point of the message.
 /// @param line is expanded by macro to the raising point of the message.
 /// @param message is the optional message to print.
-void _hif_internal_printUniqueWarnings(std::string file, unsigned int line, std::string message);
+void _hif_internal_printUniqueWarnings(const std::string &file, unsigned int line, const std::string &message);
 
 /// @brief Prints an error message, which causes exit.
 /// @param file is expanded by macro to the raising point of the message.
@@ -133,9 +133,9 @@ void _hif_internal_printUniqueWarnings(std::string file, unsigned int line, std:
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
 void _hif_internal_messageError [[noreturn]] (
-    std::string file,
+    const std::string &file,
     unsigned int line,
-    std::string message,
+    const std::string &message,
     hif::Object *involvedObject             = nullptr,
     hif::semantics::ILanguageSemantics *sem = nullptr);
 
@@ -149,9 +149,9 @@ void _hif_internal_messageError [[noreturn]] (
 /// @param sem The reference semantics.
 /// @param dontPrintCondition indicates a boolean condition to suppress the print.
 void _hif_internal_messageDebug(
-    std::string file,
+    const std::string &file,
     unsigned int line,
-    std::string message,
+    const std::string &message,
     hif::Object *involvedObject             = nullptr,
     hif::semantics::ILanguageSemantics *sem = nullptr,
     bool dontPrintCondition                 = true);
@@ -166,9 +166,9 @@ void _hif_internal_messageDebug(
 /// file name and line number originally related to the object.
 /// @param sem The reference semantics.
 void _hif_internal_messageAssert [[noreturn]] (
-    std::string file,
+    const std::string &file,
     unsigned int line,
-    std::string message,
+    const std::string &message,
     hif::Object *involvedObject             = nullptr,
     hif::semantics::ILanguageSemantics *sem = nullptr);
 
@@ -180,10 +180,10 @@ void _hif_internal_messageAssert [[noreturn]] (
 /// @param message is the actual message to print.
 /// @param objList The list of involved objects.
 void _hif_internal_messageWarningList(
-    std::string file,
+    const std::string &file,
     unsigned int line,
     bool condition,
-    std::string message,
+    const std::string &message,
     WarningList &objList);
 
 /// @brief Prints a list of warnings.
@@ -194,10 +194,10 @@ void _hif_internal_messageWarningList(
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
 void _hif_internal_messageWarningList(
-    std::string file,
+    const std::string &file,
     unsigned int line,
     bool condition,
-    std::string message,
+    const std::string &message,
     WarningSet &objSet);
 
 /// @brief Prints a list of warnings.
@@ -208,10 +208,10 @@ void _hif_internal_messageWarningList(
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
 void _hif_internal_messageWarningList(
-    std::string file,
+    const std::string &file,
     unsigned int line,
     bool condition,
-    std::string message,
+    const std::string &message,
     WarningStringSet &objSet);
 
 /// @brief Prints a list of warnings.
@@ -222,10 +222,10 @@ void _hif_internal_messageWarningList(
 /// @param message is the actual message to print.
 /// @param objList The list of involved objects.
 void _hif_internal_messageWarningList(
-    std::string file,
+    const std::string &file,
     unsigned int line,
     bool condition,
-    std::string message,
+    const std::string &message,
     WarningInfoList &objList);
 
 /// @brief Prints a list of warnings.
@@ -236,10 +236,10 @@ void _hif_internal_messageWarningList(
 /// @param message is the actual message to print.
 /// @param objSet The set of involved objects.
 void _hif_internal_messageWarningList(
-    std::string file,
+    const std::string &file,
     unsigned int line,
     bool condition,
-    std::string message,
+    const std::string &message,
     WarningInfoSet &objSet);
 
 /// @brief Sets the verbose printing flag.
@@ -323,19 +323,19 @@ auto isVerboseLog() -> bool;
 #ifdef NDEBUG // Debugging disabled in release builds.
 
 /// @brief Logs a debug message. Disabled in release builds.
-#define messageDebug(...)
+#    define messageDebug(...)
 
 /// @brief Logs a debug error message. Disabled in release builds.
-#define messageDebugError(...)
+#    define messageDebugError(...)
 
 /// @brief Logs a debug message if a condition fails. Disabled in release builds.
-#define messageDebugIfFails(...)
+#    define messageDebugIfFails(...)
 
 /// @brief Asserts a debug condition. Disabled in release builds.
-#define messageDebugAssert(...)
+#    define messageDebugAssert(...)
 
 /// @brief Logs a debug message if debugging is enabled. Disabled in release builds.
-#define messageDebugIfEnabled(...)
+#    define messageDebugIfEnabled(...)
 
 #else // Debugging enabled in debug builds.
 
@@ -347,53 +347,53 @@ extern bool hifLogDebugIsActive;
 /// @param message The debug message to log.
 /// @param involvedObject The object related to the debug message.
 /// @param semantics The semantics involved in the debug message.
-#define messageDebug(message, involvedObject, semantics)                                                               \
-    do {                                                                                                               \
-        hif::application_utils::_hif_internal_messageDebug(                                                            \
-            __FILE__, __LINE__, (message), (involvedObject), (semantics), false);                                      \
-    } while (0)
+#    define messageDebug(message, involvedObject, semantics)                                                           \
+        do {                                                                                                           \
+            hif::application_utils::_hif_internal_messageDebug(                                                        \
+                __FILE__, __LINE__, (message), (involvedObject), (semantics), false);                                  \
+        } while (0)
 
 /// @brief Logs a debug error message using the messageError macro.
 /// This macro expands its arguments to ensure proper handling by certain preprocessors.
-#define _messageExpandHelper(X) X
+#    define _messageExpandHelper(X) X
 
 /// @brief Logs a debug error message using the messageError macro.
 /// This macro expands its arguments to ensure proper handling by certain preprocessors.
-#define messageDebugError(...)  _messageExpandHelper(messageError(__VA_ARGS__))
+#    define messageDebugError(...)  _messageExpandHelper(messageError(__VA_ARGS__))
 
 /// @brief Logs a debug message if a condition fails.
 /// @param condition The condition to evaluate.
 /// @param message The debug message to log if the condition fails.
 /// @param involvedObject The object related to the debug message.
 /// @param semantics The semantics involved in the debug message.
-#define messageDebugIfFails(condition, message, involvedObject, semantics)                                             \
-    do {                                                                                                               \
-        hif::application_utils::_hif_internal_messageDebug(                                                            \
-            __FILE__, __LINE__, (message), (involvedObject), (semantics), (condition));                                \
-    } while (0)
+#    define messageDebugIfFails(condition, message, involvedObject, semantics)                                         \
+        do {                                                                                                           \
+            hif::application_utils::_hif_internal_messageDebug(                                                        \
+                __FILE__, __LINE__, (message), (involvedObject), (semantics), (condition));                            \
+        } while (0)
 
 /// @brief Asserts a debug condition, logging an error message if the condition fails.
 /// @param assertCondition The condition to check.
 /// @param message The error message to log if the assertion fails.
 /// @param involvedObject The object related to the assertion failure.
 /// @param semantics The semantics involved in the assertion failure.
-#define messageDebugAssert(assertCondition, message, involvedObject, semantics)                                        \
-    do {                                                                                                               \
-        if (!(assertCondition)) {                                                                                      \
-            hif::application_utils::_hif_internal_messageAssert(                                                       \
-                __FILE__, __LINE__, (message), (involvedObject), (semantics));                                         \
-        }                                                                                                              \
-    } while (0)
+#    define messageDebugAssert(assertCondition, message, involvedObject, semantics)                                    \
+        do {                                                                                                           \
+            if (!(assertCondition)) {                                                                                  \
+                hif::application_utils::_hif_internal_messageAssert(                                                   \
+                    __FILE__, __LINE__, (message), (involvedObject), (semantics));                                     \
+            }                                                                                                          \
+        } while (0)
 
 /// @brief Logs a debug message if debugging is enabled.
 /// @param message The debug message to log.
 /// @param involvedObject The object related to the debug message.
 /// @param semantics The semantics involved in the debug message.
-#define messageDebugIfEnabled(message, involvedObject, semantics)                                                      \
-    do {                                                                                                               \
-        hif::application_utils::_hif_internal_messageDebug(                                                            \
-            __FILE__, __LINE__, (message), (involvedObject), (semantics), !hif::hifLogDebugIsActive);                  \
-    } while (0)
+#    define messageDebugIfEnabled(message, involvedObject, semantics)                                                  \
+        do {                                                                                                           \
+            hif::application_utils::_hif_internal_messageDebug(                                                        \
+                __FILE__, __LINE__, (message), (involvedObject), (semantics), !hif::hifLogDebugIsActive);              \
+        } while (0)
 
 #endif // NDEBUG
 

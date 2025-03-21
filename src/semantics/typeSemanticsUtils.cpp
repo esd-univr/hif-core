@@ -175,13 +175,13 @@ bool isSingleBitType(Type *type, ILanguageSemantics *sem)
 
     return false;
 }
-bool isSemanticsType(Type *t)
+bool isSemanticsType(const Type *t)
 {
     if (t == nullptr)
         return false;
     if (t->getParent() == nullptr)
         return false;
-    TypedObject *to = dynamic_cast<TypedObject *>(t->getParent());
+    auto to = dynamic_cast<TypedObject *>(t->getParent());
     if (to == nullptr)
         return false;
     return (to->getSemanticType() == t);

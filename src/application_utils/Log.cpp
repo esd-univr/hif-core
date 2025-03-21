@@ -21,14 +21,14 @@
 #include "hif/semantics/semantics.hpp"
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-member-function"
-#pragma clang diagnostic ignored "-Wimplicit-fallthrough"
-#pragma clang diagnostic ignored "-Wunknown-attributes"
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wunused-member-function"
+#    pragma clang diagnostic ignored "-Wimplicit-fallthrough"
+#    pragma clang diagnostic ignored "-Wunknown-attributes"
 #elif defined __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
-#pragma GCC diagnostic ignored "-Wattributes"
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-function"
+#    pragma GCC diagnostic ignored "-Wattributes"
 #endif
 
 namespace hif
@@ -139,7 +139,7 @@ UniqueWarnings _uniqueWarnings;
 class ObjectDetailVisitor : public HifVisitor
 {
 public:
-    ObjectDetailVisitor(std::ostream &outStream, hif::semantics::ILanguageSemantics *sem, const std::string file);
+    ObjectDetailVisitor(std::ostream &outStream, hif::semantics::ILanguageSemantics *sem, const std::string &file);
     ~ObjectDetailVisitor();
 
     virtual int visitAggregate(Aggregate &o);
@@ -259,7 +259,7 @@ bool ObjectDetailVisitor::isVerbose = false;
 ObjectDetailVisitor::ObjectDetailVisitor(
     std::ostream &outStream,
     hif::semantics::ILanguageSemantics *sem,
-    const std::string file)
+    const std::string &file)
     : _outStream(outStream)
     , _sem(sem)
     , _raisingFile(file)
@@ -1011,7 +1011,7 @@ void ObjectDetailVisitor::_printObjectDeclaration(Object *o, const std::string &
         return;
     }
 
-    const std::string obj = (refObject != "Object") ? refObject : hif::classIDToString(o->getClassId());
+    std::string obj = (refObject != "Object") ? refObject : hif::classIDToString(o->getClassId());
 
     _outStream << "\n\n------------------------------------------------------------\n"
                << obj << " declaration:" << std::endl;
@@ -1071,7 +1071,7 @@ template <typename T> void ObjectDetailVisitor::_printObjectBaseTypes(T *o, cons
         return;
     }
 
-    const std::string obj = (refObject != "Object") ? refObject : hif::classIDToString(o->getClassId());
+    std::string obj = (refObject != "Object") ? refObject : hif::classIDToString(o->getClassId());
 
     _outStream << "\n\n------------------------------------------------------------\n"
                << obj << " base type:" << std::endl;
@@ -1185,7 +1185,7 @@ std::ostream &_getOutputStream(LogLevel logLevel)
     }
 }
 
-void _printMessage(std::ostream &outStream, std::string &logLevel, const std::string message)
+void _printMessage(std::ostream &outStream, std::string &logLevel, const std::string &message)
 {
     if (!_applicationNames.empty() && !_applicationNames.front().empty()) {
         outStream << "[" << _applicationNames.front() << "] ";
@@ -1201,7 +1201,7 @@ void _printMessage(std::ostream &outStream, std::string &logLevel, const std::st
 
 void _printRaisePoint(
     std::ostream &outStream,
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool callFromPrintUniqueWarnings = false,
     unsigned long long counter             = 0)
@@ -1220,7 +1220,7 @@ void _printDetails(
     std::ostream &outStream,
     hif::Object *involvedObject,
     hif::semantics::ILanguageSemantics *sem,
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool callFromPrintUniqueWarnings = false)
 {
@@ -1241,7 +1241,7 @@ void _printDetails(
     const bool isInTree = hif::isInTree(involvedObject);
     outStream << "- Object in tree: " << (isInTree ? "true" : "false") << std::endl;
 
-    Type *ttmp = dynamic_cast<Type *>(involvedObject);
+    auto ttmp = dynamic_cast<const Type *>(involvedObject);
     if (ttmp != nullptr) {
         const bool isSemType = hif::semantics::isSemanticsType(ttmp);
         outStream << "- Object is semantic type: " << (isSemType ? "true" : "false") << std::endl;
@@ -1275,16 +1275,19 @@ void _printDetails(
     }
 }
 
-void _printReport(std::ostream &outStream) { outStream << "\nPlease report issues to enrico.fraccaroli@univr.it" << std::endl; }
+void _printReport(std::ostream &outStream)
+{
+    outStream << "\nPlease report issues to enrico.fraccaroli@univr.it" << std::endl;
+}
 
 void _message(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     LogLevel logLevel,
-    const std::string message,
+    const std::string &message,
     hif::Object *involvedObject             = nullptr,
     hif::semantics::ILanguageSemantics *sem = nullptr,
-    const bool assertCondition              = true)
+    bool assertCondition                    = true)
 {
     std::ostream &outStream = _getOutputStream(logLevel);
     std::string strLogLevel = _getLogLevel(logLevel);
@@ -1322,9 +1325,9 @@ void _message(
     }
 }
 
-void _setApplicationName(const std::string name) { _applicationNames.push_front(name); }
+void _setApplicationName(const std::string &name) { _applicationNames.push_front(name); }
 
-void _setComponentName(const std::string name)
+void _setComponentName(const std::string &name)
 {
     assert(!_applicationNames.empty());
     assert(!_applicationNames.front().empty());
@@ -1347,7 +1350,7 @@ std::string getComponentName()
     return _componentNames.front();
 }
 
-void initializeLogHeader(const std::string appName, const std::string compName)
+void initializeLogHeader(const std::string &appName, const std::string &compName)
 {
     Application::getInstance();
     _setApplicationName(appName);
@@ -1362,22 +1365,22 @@ void restoreLogHeader()
         _componentNames.pop_front();
 }
 
-void _hif_internal_messageInfo(const std::string file, unsigned int line, const std::string message)
+void _hif_internal_messageInfo(const std::string &file, unsigned int line, const std::string &message)
 {
     _message(file, line, INFO, message);
 }
 
 void _hif_internal_messageWarning(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
-    const std::string message,
+    const std::string &message,
     hif::Object *involvedObject,
     hif::semantics::ILanguageSemantics *sem)
 {
     _message(file, line, WARNING, message, involvedObject, sem);
 }
 
-void _hif_internal_raiseUniqueWarning(const std::string file, unsigned int line, const std::string message)
+void _hif_internal_raiseUniqueWarning(const std::string &file, unsigned int line, const std::string &message)
 {
     UniqueInfos infos(file, line);
     UniqueInfoSet::iterator it = _uniqueWarnings[message].find(infos);
@@ -1390,7 +1393,7 @@ void _hif_internal_raiseUniqueWarning(const std::string file, unsigned int line,
     }
 }
 
-void _hif_internal_printUniqueWarnings(const std::string file, unsigned int line, const std::string message)
+void _hif_internal_printUniqueWarnings(const std::string &file, unsigned int line, const std::string &message)
 {
     if (_uniqueWarnings.empty())
         return;
@@ -1422,9 +1425,9 @@ void _hif_internal_printUniqueWarnings(const std::string file, unsigned int line
 }
 
 void _hif_internal_messageError(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
-    const std::string message,
+    const std::string &message,
     hif::Object *involvedObject,
     hif::semantics::ILanguageSemantics *sem)
 {
@@ -1433,9 +1436,9 @@ void _hif_internal_messageError(
 }
 
 void _hif_internal_messageDebug(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
-    const std::string message,
+    const std::string &message,
     hif::Object *involvedObject,
     hif::semantics::ILanguageSemantics *sem,
     const bool dontPrintCondition)
@@ -1446,9 +1449,9 @@ void _hif_internal_messageDebug(
 }
 
 void _hif_internal_messageAssert(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
-    const std::string message,
+    const std::string &message,
     hif::Object *involvedObject,
     hif::semantics::ILanguageSemantics *sem)
 {
@@ -1457,10 +1460,10 @@ void _hif_internal_messageAssert(
 }
 
 void _hif_internal_messageWarningList(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool condition,
-    const std::string message,
+    const std::string &message,
     WarningList &objList)
 {
     if (!condition)
@@ -1495,10 +1498,10 @@ void _hif_internal_messageWarningList(
 }
 
 void _hif_internal_messageWarningList(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool condition,
-    const std::string message,
+    const std::string &message,
     WarningSet &objSet)
 {
     if (!condition)
@@ -1513,10 +1516,10 @@ void _hif_internal_messageWarningList(
 }
 
 void _hif_internal_messageWarningList(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool condition,
-    const std::string message,
+    const std::string &message,
     WarningStringSet &objList)
 {
     if (!condition)
@@ -1537,10 +1540,10 @@ void _hif_internal_messageWarningList(
 }
 
 void _hif_internal_messageWarningList(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool condition,
-    const std::string message,
+    const std::string &message,
     WarningInfoList &objList)
 {
     if (!condition)
@@ -1573,10 +1576,10 @@ void _hif_internal_messageWarningList(
 }
 
 void _hif_internal_messageWarningList(
-    const std::string file,
+    const std::string &file,
     unsigned int line,
     const bool condition,
-    const std::string message,
+    const std::string &message,
     WarningInfoSet &objSet)
 {
     if (!condition)

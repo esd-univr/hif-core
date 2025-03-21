@@ -201,8 +201,8 @@ public:
 
     void printHifEnum(
         const std::string &eVal,
-        const std::string before = " [",
-        const std::string after  = "]",
+        const std::string &before = " [",
+        const std::string &after  = "]",
         const bool manageEmpty   = false);
 
     static std::string stringTypeVariant(const Type::TypeVariant t);
@@ -475,7 +475,7 @@ int PrintHifVisitor::visitList(BList<Object> &l)
         return 0;
     _pushBList();
 
-    const std::string listName(_toUpperCase(l.getName()));
+    std::string listName(_toUpperCase(l.getName()));
 
     if (_opt.printSummary) {
         BListSet::iterator it = _listsMustPrintInBrief.find(&l);
@@ -506,8 +506,8 @@ int PrintHifVisitor::visitList(BList<Object> &l)
 
 void PrintHifVisitor::printHifEnum(
     const std::string &eVal,
-    const std::string before,
-    const std::string after,
+    const std::string &before,
+    const std::string &after,
     const bool manageEmpty)
 {
     if (manageEmpty && eVal == "")
@@ -2598,7 +2598,7 @@ void PrintHifVisitor::_printParentFieldBegin(Object *o)
     if (!_stack.back().mustPrintParentField)
         return;
 
-    const std::string parentField = _toUpperCase(o->getFieldName());
+    std::string parentField = _toUpperCase(o->getFieldName());
     if (parentField.empty())
         return;
 

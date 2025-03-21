@@ -471,7 +471,7 @@ bool SplitConcats::_fixArrayParameters(Object *o)
         if (dynamic_cast<Signal *>(decl) == nullptr && dynamic_cast<Port *>(decl) == nullptr)
             continue;
 
-        const std::string n = std::string(id->getName()) + "_supp";
+        const std::string &n = std::string(id->getName()) + "_supp";
         std::string varName = hif::NameTable::getInstance()->getFreshName(n.c_str());
         Variable *var       = _factory.variable(hif::copy(type), varName);
         StateTable *st      = hif::getNearestParent<StateTable>(o);

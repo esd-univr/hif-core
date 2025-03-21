@@ -59,7 +59,7 @@ public:
     /// @brief Struct storing code info.
     struct CodeInfo {
         CodeInfo();
-        CodeInfo(const std::string f, unsigned int l, unsigned int c);
+        CodeInfo(const std::string & f, unsigned int l, unsigned int c);
         ~CodeInfo();
         CodeInfo(const CodeInfo &other);
         CodeInfo &operator=(const CodeInfo &other);
@@ -115,7 +115,7 @@ public:
     /// @param n The name of the property to be added to the object.
     /// @param v An optional value to be associated with the property.
     /// @return The previous value associated with the property if any.
-    TypedObject *addProperty(const std::string n, TypedObject *v = nullptr);
+    TypedObject *addProperty(const std::string &n, TypedObject *v = nullptr);
 
     /// @brief Adds a property to the object.
     /// @param n The name of the property to be added to the object.
@@ -125,7 +125,7 @@ public:
 
     /// @brief Removes a property from the object deleting associated value if any.
     /// @param n The name of the property to be removed.
-    void removeProperty(const std::string n);
+    void removeProperty(const std::string &n);
 
     /// @brief Removes a property from the object deleting associated value if any.
     /// @param n The name of the property to be removed.
@@ -136,7 +136,7 @@ public:
     /// @param n The name of the property to be checked.
     /// @return <tt>true</tt> if the object contains at least one property
     /// named @p n, <tt>false</tt> otherwise.
-    bool checkProperty(const std::string n) const;
+    bool checkProperty(const std::string &n) const;
 
     /// @brief Checks whether the object contains at least one property
     /// having @p n as its name.
@@ -148,7 +148,7 @@ public:
     /// @brief Returns the values of the property named @p n in the object.
     /// @param n The name of the property to be searched for.
     /// @return The value corresponding to the searched property.
-    TypedObject *getProperty(const std::string n) const;
+    TypedObject *getProperty(const std::string &n) const;
 
     /// @brief Returns the values of the property named @p n in the object.
     /// @param n The name of the property to be searched for.

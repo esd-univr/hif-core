@@ -15,14 +15,14 @@
 #include "hif/manipulation/manipulation.hpp"
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wmissing-noreturn"
 #endif
 
 #ifdef NDEBUG
-#define HIF_IS_ACTIVE false
+#    define HIF_IS_ACTIVE false
 #else
-#define HIF_IS_ACTIVE true
+#    define HIF_IS_ACTIVE true
 #endif
 
 // /////////////////////////////////////////////////////////////////////////////
@@ -295,7 +295,7 @@ auto CommandLineParser::getFiles() -> CommandLineParser::Files & { return _files
 void CommandLineParser::printHelp() const
 {
     std::string help;
-    const std::string delimiter(_maxLineSize + 4, '*');
+    std::string delimiter(_maxLineSize + 4, '*');
 
     std::string toolName(_toolName);
 #ifndef NDEBUG

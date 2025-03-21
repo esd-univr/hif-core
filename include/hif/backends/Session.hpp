@@ -8,8 +8,8 @@
 #pragma once
 
 #ifdef HIFDIR_DBG
-#include <iomanip>
-#include <iostream>
+#    include <iomanip>
+#    include <iostream>
 #endif
 
 #include "hif/classes/classes.hpp"
@@ -24,11 +24,11 @@ namespace backends
 static int nIndent = 0;
 char *PutnChar(int nI);
 
-#define INC_INDENT nIndent += 2
-#define DEC_INDENT nIndent -= 2
-#define INDENT     PutnChar(nIndent)
+#    define INC_INDENT nIndent += 2
+#    define DEC_INDENT nIndent -= 2
+#    define INDENT     PutnChar(nIndent)
 
-#define METHOD "<<METHOD>> : "
+#    define METHOD "<<METHOD>> : "
 #endif // HIFDIR_DBG
 class CNodeVisitor;
 
@@ -57,7 +57,7 @@ public:
 
 private:
     CNode(const CNode &);
-    CNode &operator=(const CNode &);
+    auto operator=(const CNode &) -> CNode &;
 
     /// @brief Node status
     Mode_T m_eMode;
@@ -98,7 +98,7 @@ public:
     /// @brief Set an instance name
     void SetInstName(std::string sName);
     /// @brief Set an entity name
-    void SetEntName(std::string sName);
+    void SetEntName(const std::string& sName);
     /// @brief Set an instance flag
     void SetInstTag(InstTag_T eTag);
     /// @brief Set a status
@@ -113,31 +113,31 @@ public:
     void SetMovedPath(CNode *pnParent);
 
     /// @brief Get the node name
-    const std::string getName();
+    auto getName() -> std::string;
     /// @brief Get an abstract name which defining the node path
     std::vector<std::string> GetPath();
     /// @brief Get an instance name
-    const std::string GetInstName() { return m_sInstName; }
+    auto GetInstName() -> std::string { return m_sInstName; }
     /// @brief Get the entity name
-    const std::string GetEntName() { return m_sEntName; }
+    auto GetEntName() -> std::string { return m_sEntName; }
     /// @brief Get the node status
-    Mode_T GetMode() { return m_eMode; }
+    auto GetMode() -> Mode_T { return m_eMode; }
     /// @brief Get the instance flag
-    InstTag_T GetInstTag() { return m_eInstTag; }
+    auto GetInstTag() -> InstTag_T { return m_eInstTag; }
 
     /// @brief Get the first instance of a node
-    CNode *GetOrgNode() { return m_pnFirstInst; }
+    auto GetOrgNode() -> CNode * { return m_pnFirstInst; }
     /// @brief Get the directory where the node must move to
-    CNode *MovedToParent() { return m_pnMovedTo; }
+    auto MovedToParent() -> CNode * { return m_pnMovedTo; }
 
     /// @brief Compare two nodes
-    bool operator==(const CNode &rNr);
+    auto operator==(const CNode &rNr) -> bool;
 
     /// @brief Get a parent node of the current node
-    CNode *GetParent() { return m_pnParent; }
+    auto GetParent() -> CNode * { return m_pnParent; }
 
     /// @brief Define a visitor access on nodes
-    int acceptVisitor(CNodeVisitor &rVis);
+    auto acceptVisitor(CNodeVisitor &rVis) -> int;
 
 #ifdef HIFDIR_DBG
     const char *PrintMode();
@@ -161,7 +161,7 @@ public:
         EXE, ///< "exe" executable directory
         OBJ  ///< "obj" object .o directory
     };
-    
+
     /// @brief List of sub-directories
     /// (applied on a design unit or a library def directory)
     static const char *const CSuffix[];
@@ -176,17 +176,17 @@ public:
     ~CSession();
 
     /// @brief Get a related path between the two inputs : vsTgt - vsSrc
-    std::vector<std::string> Find(std::vector<std::string> &vsTgt, std::vector<std::string> &vsSrc);
+    static std::vector<std::string> Find(std::vector<std::string> &vsTgt, std::vector<std::string> &vsSrc);
 
     /// @brief Return a node instance corresponding to rnElt
-    CNode *FindAnInstance(CNode &rnElt);
+    auto FindAnInstance(CNode &rnElt) -> CNode *;
     /// @brief Return the original node instance corresponding to rnElt
-    CNode *FindTheInstance(CNode &rnElt);
+    auto FindTheInstance(CNode &rnElt) -> CNode *;
 
     /// @brief Update the session with the PRECHECK flag
-    int PreCheck();
+    auto PreCheck() -> int;
     /// @brief Update the session with the UPDATE flag
-    int Update();
+    auto Update() -> int;
 
     /// @brief Absolute Find methods
     std::vector<std::string> Find(hif::LibraryDef &rlTgt);
@@ -231,14 +231,14 @@ public:
     std::vector<std::string> Find(std::string &sbTgt, std::string &svTgt, std::string &sbSrc, std::string &svSrc);
 
     /// @brief Apply the command line pcLine
-    int Apply(const char *pcLine);
+    auto Apply(const char *pcLine) -> int;
     /// @brief Apply methods on a specific node
-    int Apply(hif::DesignUnit &rduTgt, const char *pcLine, const char *pcSuffix);
-    int Apply(hif::View &rvTgt, const char *pcLine, const char *pcSuffix);
-    int Apply(hif::Instance &riTgt, const char *pcLine, const char *pcSuffix);
-    int Apply(hif::LibraryDef &rlTgt, const char *pcLine, const char *pcSuffix);
+    auto Apply(hif::DesignUnit &rduTgt, const char *pcLine, const char *pcSuffix) -> int;
+    auto Apply(hif::View &rvTgt, const char *pcLine, const char *pcSuffix) -> int;
+    auto Apply(hif::Instance &riTgt, const char *pcLine, const char *pcSuffix) -> int;
+    auto Apply(hif::LibraryDef &rlTgt, const char *pcLine, const char *pcSuffix) -> int;
     /// \attention Target = base + view
-    int Apply(std::string &sbTgt, std::string &svTgt, const char *pcLine, const char *pcSuffix);
+    auto Apply(std::string &sbTgt, std::string &svTgt, const char *pcLine, const char *pcSuffix) -> int;
 };
 
 #ifdef HIFDIR_DBG

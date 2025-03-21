@@ -109,7 +109,7 @@ std::string ILanguageSemantics::_makeHifName(const std::string &reqName, const b
 TypeDef *
 ILanguageSemantics::_makeEnum(const char *enumName, const char *values[], const size_t size, const bool hifFormat)
 {
-    const std::string en(_makeHifName(enumName, hifFormat));
+    std::string en(_makeHifName(enumName, hifFormat));
 
     TypeDef *td = new TypeDef();
     td->setName(en);
@@ -156,9 +156,8 @@ void ILanguageSemantics::_makeAttributeParameter(
             dynamic_cast<Unsigned *>(paramType) != nullptr) {
             Range *span = typeGetSpan(paramType, this);
             if (span == nullptr) {
-                Range *r = new Range(
-                    new Identifier("left" + paramIndex), new Identifier("right" + paramIndex),
-                    dir_downto);
+                Range *r =
+                    new Range(new Identifier("left" + paramIndex), new Identifier("right" + paramIndex), dir_downto);
                 typeSetSpan(paramType, r, this);
 
                 hif::HifFactory fact(this);
@@ -219,8 +218,7 @@ Array *ILanguageSemantics::_makeTemplateArray(const std::string &index, Type *t)
 {
     Array *ret = new Array();
     ret->setType(t);
-    Range *r =
-        new Range(new Identifier("left" + index), new Identifier("left" + index), hif::dir_downto);
+    Range *r = new Range(new Identifier("left" + index), new Identifier("left" + index), hif::dir_downto);
     ret->setSpan(r);
     return ret;
 }
@@ -297,11 +295,11 @@ SubProgram *ILanguageSemantics::_makeAttribute(
     return f;
 }
 
-bool ILanguageSemantics::_isHifPrefixed(const std::string& n, std::string &unprefixed)
+bool ILanguageSemantics::_isHifPrefixed(const std::string &n, std::string &unprefixed)
 {
     unprefixed = n;
-    const std::string hifPrefix("hif_" + getName() + "_");
-    const bool isHif = (hifPrefix == unprefixed.substr(0, hifPrefix.size()));
+    std::string hifPrefix("hif_" + getName() + "_");
+    bool isHif = (hifPrefix == unprefixed.substr(0, hifPrefix.size()));
 
     if (isHif)
         unprefixed = unprefixed.substr(hifPrefix.size());
@@ -339,7 +337,7 @@ void ILanguageSemantics::addStandardPackages(System *s)
     hif::application_utils::restoreLogHeader();
 }
 
-std::string ILanguageSemantics::mapStandardFilename(const std::string& n)
+std::string ILanguageSemantics::mapStandardFilename(const std::string &n)
 {
     StandardLibraryFiles::iterator it = _standardFilenames.find(n);
     if (it == _standardFilenames.end())
@@ -379,7 +377,7 @@ ILanguageSemantics::ValueSymbol &ILanguageSemantics::ValueSymbol::operator=(cons
     return *this;
 }
 
-bool ILanguageSemantics::isStandardInclusion(const std::string& /*n*/, const bool /*isLibInclusion*/) { return false; }
+bool ILanguageSemantics::isStandardInclusion(const std::string & /*n*/, const bool /*isLibInclusion*/) { return false; }
 
 } // namespace semantics
 } // namespace hif

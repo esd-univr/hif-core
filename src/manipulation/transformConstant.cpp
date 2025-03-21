@@ -730,7 +730,7 @@ void TransformConstant::map(BitvectorValue *v, Bitvector *t)
                 else
                     sign = res[res.size() - 1];
 
-                const std::string ext(diff, sign);
+                std::string ext(diff, sign);
 
                 std::string tmp;
                 if (cvIsDownto)
@@ -749,7 +749,7 @@ void TransformConstant::map(BitvectorValue *v, Bitvector *t)
             else
                 sign = val[static_cast<std::string::size_type>(valSize) - 1];
 
-            const std::string ext(diff, sign);
+            std::string ext(diff, sign);
             if (cvIsDownto)
                 res = ext + val;
             else
@@ -757,7 +757,7 @@ void TransformConstant::map(BitvectorValue *v, Bitvector *t)
         }
     } else // ! cvIsSigned
     {
-        const std::string ext(diff, '0');
+        std::string ext(diff, '0');
 
         if (valSize > tSize) {
             // unsigned truncating

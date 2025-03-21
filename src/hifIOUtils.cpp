@@ -229,6 +229,7 @@ void writeFile(std::ostream &outstream, Object *obj, bool xml_format, const Prin
         printHif(*obj, outstream, opt);
     }
 }
+
 void writeUniqueFile(
     const std::string &filename,
     Object *obj,

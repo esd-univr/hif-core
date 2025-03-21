@@ -1168,7 +1168,7 @@ Function *XmlParser::_visitFunction(Poco::XML::Node *n)
     /// ATTRIBUTES
     ret->setName(_getStringAttributeByName(n, "name", true));
     ret->setStandard(_getBoolAttributeByName(n, "standard", false));
-    const std::string kind = _getStringAttributeByName(n, "kind");
+    std::string kind = _getStringAttributeByName(n, "kind");
     ret->setKind(SubProgram::kindFromString(kind));
 
     /// CHILDREN
@@ -1756,7 +1756,7 @@ Procedure *XmlParser::_visitProcedure(Poco::XML::Node *n)
     /// ATTRIBUTES
     ret->setName(_getStringAttributeByName(n, "name", true));
     ret->setStandard(_getBoolAttributeByName(n, "standard", false));
-    const std::string kind = _getStringAttributeByName(n, "kind");
+    std::string kind = _getStringAttributeByName(n, "kind");
     ret->setKind(SubProgram::kindFromString(kind));
 
     /// CHILDREN

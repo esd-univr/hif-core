@@ -28,7 +28,7 @@ Object::CodeInfo::CodeInfo()
     // ntd
 }
 
-Object::CodeInfo::CodeInfo(const std::string f, unsigned int l, unsigned int c)
+Object::CodeInfo::CodeInfo(const std::string & f, unsigned int l, unsigned int c)
     : filename(f)
     , lineNumber(l)
     , columnNumber(c)
@@ -148,7 +148,7 @@ Object::~Object()
 }
 void Object::_setParent(Object *p) { _parent = p; }
 
-TypedObject *Object::addProperty(const std::string n, TypedObject *v)
+TypedObject *Object::addProperty(const std::string &n, TypedObject *v)
 {
     if (_properties == nullptr)
         _properties = new PropertyMap();
@@ -163,7 +163,7 @@ TypedObject *Object::addProperty(const std::string n, TypedObject *v)
 
 TypedObject *Object::addProperty(const PropertyId n, TypedObject *v) { return addProperty(getPropertyName(n), v); }
 
-void Object::removeProperty(const std::string n)
+void Object::removeProperty(const std::string &n)
 {
     if (_properties == nullptr)
         return;
@@ -175,7 +175,7 @@ void Object::removeProperty(const std::string n)
 
 void Object::removeProperty(const PropertyId n) { removeProperty(getPropertyName(n)); }
 
-bool Object::checkProperty(const std::string n) const
+bool Object::checkProperty(const std::string &n) const
 {
     if (_properties == nullptr)
         return false;
@@ -400,7 +400,7 @@ const Object::BLists &Object::getBLists()
     return *_blists;
 }
 
-TypedObject *Object::getProperty(const std::string n) const
+TypedObject *Object::getProperty(const std::string &n) const
 {
     if (!checkProperty(n))
         return nullptr;

@@ -19,24 +19,26 @@ namespace /*anon*/
 
 } // namespace
 
-template <typename T>
-T *getNearestParent(Object *o, const bool matchStarting)
+template <typename T> T *getNearestParent(Object *object, const bool matchStarting)
 {
-    if (o == nullptr) {
+    if (object == nullptr) {
         assert(false);
         return nullptr;
     }
 
-    Object *object = o;
-    if (!matchStarting)
-        object = o->getParent();
-    while (object != nullptr) {
-        if (dynamic_cast<T *>(object))
-            break;
-        object = object->getParent();
+    auto current = object;
+
+    if (!matchStarting) {
+        current = object->getParent();
     }
 
-    return static_cast<T *>(object);
+    while (current) {
+        if (dynamic_cast<T *>(current))
+            break;
+        current = current->getParent();
+    }
+
+    return static_cast<T *>(current);
 }
 
 /// @brief Defines a template method for retrieving the nearest parent object of a specific type.

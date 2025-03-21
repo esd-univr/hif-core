@@ -19,16 +19,16 @@ namespace /*anon*/
 
 } // namespace
 
-bool isInTree(Object *obj)
+bool isInTree(const Object *obj)
 {
-    if (obj == nullptr)
-        return false;
-    Object *current = obj;
-    while (current->getParent() != nullptr) {
-        current = current->getParent();
+    if (obj) {
+        auto current = obj;
+        while (current->getParent()) {
+            current = current->getParent();
+        }
+        return (dynamic_cast<const System *>(current) != nullptr);
     }
-
-    return (dynamic_cast<System *>(current) != nullptr);
+    return false;
 }
 
 } // namespace hif

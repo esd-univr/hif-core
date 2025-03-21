@@ -11,54 +11,66 @@
 #include <string>
 #include <sys/stat.h>
 
-#if (defined _MSC_VER)
+//------------------------------------------------------------------------------
+// Compiler- and platform-specific macros for HIF.
+//------------------------------------------------------------------------------
 
-#define HIF_DEPRECATED(msg) __declspec(deprecated(msg))
-// dll-interface export problem
-#pragma warning(disable : 4251)
-// no suitable template instantation
-#pragma warning(disable : 4661)
-
-#if (defined COMPILE_HIF_LIB)
-// Compiling dynamic hif
-#define __declspec(dllexport)
-#elif (defined USE_HIF_LIB)
-// Linking dynamic libs
-#define __declspec(dllimport)
+#if defined(_MSC_VER)
+// Define deprecated macro (MSVC-style).
+#    define HIF_DEPRECATED(msg) __declspec(deprecated(msg))
+// Suppress common MSVC warnings.
+#    pragma warning(disable : 4251) // DLL interface export problem.
+#    pragma warning(disable : 4661) // No suitable template instantiation.
+// Determine dynamic/static linking.
+#    if defined(COMPILE_HIF_LIB)
+#        define __declspec(dllexport)
+#    elif defined(USE_HIF_LIB)
+#        define __declspec(dllimport)
+#    endif
+// Ensure 64-bit build.
+#    if defined(_WIN64)
+#        define HIF_64 1
+#    elif defined(_WIN32)
+#        define HIF_64 0
+#        error "HIF requires compilation with a 64-bit compiler."
+#    else
+#        error "Unexpected Windows architecture."
+#    endif
+#elif defined(__APPLE__)
+// MacOS-specific includes (if needed).
+#    include <dirent.h>
+#    include <sys/types.h>
+// Define deprecated macro (Clang/GCC-style).
+#    define HIF_DEPRECATED(msg)     __attribute__((deprecated))
+// Support for push/pop diagnostics (Clang/GCC).
+#    define HIF_DIAGNOSTIC_PUSH_POP 1
+#    pragma GCC diagnostic warning "-Wdeprecated-declarations"
+// Ensure 64-bit build.
+#    if defined(__x86_64__) || defined(__aarch64__)
+#        define HIF_64 1
+#    elif defined(__i386__)
+#        define HIF_64 0
+#        error "HIF requires compilation with a 64-bit compiler."
+#    else
+#        error "Unexpected macOS architecture."
+#    endif
+#elif defined(__GNUC__)
+// Linux (GCC)
+#    include <dirent.h>
+#    include <sys/types.h>
+#    define HIF_DEPRECATED(msg)     __attribute__((deprecated))
+#    define HIF_DIAGNOSTIC_PUSH_POP (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5))
+#    pragma GCC diagnostic warning "-Wdeprecated-declarations"
+#    if defined(__x86_64__)
+#        define HIF_64 1
+#    elif defined(__i386__)
+#        define HIF_64 0
+#        error "HIF requires compilation with a 64-bit compiler."
+#    else
+#        error "Unexpected Linux architecture."
+#    endif
 #else
-// Compiling or linking static libs
-#define
-#endif
-#if (defined _WIN64)
-#define HIF_64 1
-#elif (defined _WIN32)
-#define HIF_64 0
-#error "HIF requires to be compiled with 64-bit compiler"
-#else
-#error "Unexpected architecture"
-#endif
-
-#elif (defined __GNUC__)
-
-// Linux
-#include <dirent.h>
-#include <sys/types.h>
-
-#define HIF_DEPRECATED(msg)     __attribute__((deprecated))
-#define HIF_DIAGNOSTIC_PUSH_POP (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 5))
-#pragma GCC diagnostic warning "-Wdeprecated-declarations"
-
-#if (defined __x86_64__)
-#define HIF_64 1
-#elif (defined __i386__)
-#define HIF_64 0
-#error "HIF requires to be compiled with 64-bit compiler"
-#else
-#error "Unexpected architecture"
-#endif
-
-#else
-#error "Unsupported compiler"
+#    error "Unsupported compiler."
 #endif
 
 namespace hif
@@ -68,59 +80,6 @@ namespace application_utils
 
 /// @name Common portability methods.
 /// @{
-
-/// @brief Case-insensitive string comparison.
-/// @param s1 First null-terminated string.
-/// @param s2 Second null-terminated string.
-/// @return 0 if the strings are equal (case-insensitive),
-///         negative value if s1 is less than s2 (case-insensitive),
-///         positive value if s1 is greater than s2 (case-insensitive).
-
-auto hif_strcasecmp(const char *s1, const char *s2) -> int;
-
-/// @brief Case-insensitive string comparison with size limit.
-/// @param s1 First null-terminated string.
-/// @param s2 Second null-terminated string.
-/// @param size Maximum number of characters to compare.
-/// @return 0 if the strings are equal (case-insensitive),
-///         negative value if s1 is less than s2 (case-insensitive),
-///         positive value if s1 is greater than s2 (case-insensitive).
-
-auto hif_strncasecmp(const char *s1, const char *s2, size_t size) -> int;
-
-/// @brief Converts a string to a long long integer.
-/// @param s1 The string to convert.
-/// @param s2 Pointer to the next character in the string after the number.
-/// @param base Numerical base to use for conversion.
-/// @return The converted value as a long long integer.
-
-auto hif_strtoll(const char *s1, char **s2, int base) -> long long;
-
-/// @brief Gets the current working directory.
-/// @param buf Buffer to store the directory path.
-/// @param size Size of the buffer.
-/// @return Pointer to the buffer containing the directory path, or nullptr on failure.
-
-auto hif_getcwd(char *buf, size_t size) -> char *;
-
-/// @brief Changes the file mode (permissions) of a given file.
-/// @param path Path to the file.
-/// @param m New mode to set.
-/// @return 0 on success, or -1 on failure.
-
-auto hif_chmod(const char *path, int m) -> int;
-
-/// @brief Changes the current working directory.
-/// @param path Path to the directory to switch to.
-/// @return 0 on success, or -1 on failure.
-
-auto hif_chdir(const char *path) -> int;
-
-/// @brief Removes a directory.
-/// @param path Path to the directory to remove.
-/// @return 0 on success, or -1 on failure.
-
-auto hif_rmdir(const char *path) -> int;
 
 /// @brief Creates a directory with the specified mode.
 /// @param path Path to the directory to create.
