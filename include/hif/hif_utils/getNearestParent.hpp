@@ -23,12 +23,12 @@ namespace hif
 /// @endcode
 ///
 /// @tparam T The type of the object to be returned.
-/// @param o The starting point of the function search.
-/// @param matchStarting If <tt>true</tt> match also the passed @p o.
+/// @param object The starting point of the function search.
+/// @param matchStarting If <tt>true</tt> match also the passed object.
 /// Default is <tt>false</tt>.
 /// @return The wanted Hif object or nullptr if it has not been found.
 ///
 template <typename T>
-T *getNearestParent(Object *o, const bool matchStarting = false);
+T *getNearestParent(Object *object, const bool matchStarting = false);
 
 } // namespace hif

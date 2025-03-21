@@ -212,7 +212,7 @@ _findByTopLevelName(System *root, hif::semantics::ILanguageSemantics *sem, FindT
             messageError("Unexpected unrelated view", view, sem);
         }
 
-        const std::string duName(parent->getName());
+        const std::string &duName(parent->getName());
         if (duName != opt.topLevelName)
             continue;
 

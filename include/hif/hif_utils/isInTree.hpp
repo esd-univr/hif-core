@@ -17,6 +17,6 @@ namespace hif
 /// @return <tt>true</tt> if System is reachable.
 ///
 
-bool isInTree(Object *obj);
+bool isInTree(const Object *obj);
 
 } // namespace hif

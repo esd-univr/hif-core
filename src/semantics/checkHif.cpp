@@ -15,11 +15,11 @@
 #include "hif/semantics/semantics.hpp"
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-member-function"
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wunused-member-function"
 #elif defined __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
 namespace hif
@@ -69,8 +69,7 @@ private:
     hif::semantics::DeclarationOptions _dopt;
     ObjectList *_wrongSymbols;
 
-    template <typename T>
-    bool _checkSemanticsSymbolDeclaration(T *symbol);
+    template <typename T> bool _checkSemanticsSymbolDeclaration(T *symbol);
 
     // disabled
     CheckSemanticsType(const CheckSemanticsType &);
@@ -102,8 +101,7 @@ bool CheckSemanticsType::checkSemanticsType(Type *semType, ObjectList &symbolLis
     return _wrongSymbols->empty();
 }
 
-template <typename T>
-bool CheckSemanticsType::_checkSemanticsSymbolDeclaration(T *symbol)
+template <typename T> bool CheckSemanticsType::_checkSemanticsSymbolDeclaration(T *symbol)
 {
     typename T::DeclarationType *decl = getDeclaration(symbol, _sem, _dopt);
     if (decl == nullptr)
@@ -330,12 +328,10 @@ private:
     bool _checkLogicValues(Object *o, const std::string &s, const bool isLogic);
 
     /// @brief Check existence of declaration and its support.
-    template <typename T>
-    bool _checkDeclaration(T *o);
+    template <typename T> bool _checkDeclaration(T *o);
 
     /// @brief Check the result of instantiate call on given symbol.
-    template <typename T>
-    bool _checkInstantiate(T *o);
+    template <typename T> bool _checkInstantiate(T *o);
 
     /// @brief Check The semantics type correctness.
     bool _checkSemanticsType(TypedObject *o);
@@ -2529,8 +2525,7 @@ bool CheckHifDescription::_checkSemanticsType(TypedObject *o)
     return true;
 }
 
-template <typename T>
-bool CheckHifDescription::_checkDeclaration(T *o)
+template <typename T> bool CheckHifDescription::_checkDeclaration(T *o)
 {
     typename T::DeclarationType *decl = getDeclaration(o, _sem);
     if (decl == nullptr) {
@@ -2557,8 +2552,7 @@ bool CheckHifDescription::_checkDeclaration(T *o)
     return true;
 }
 
-template <typename T>
-bool CheckHifDescription::_checkInstantiate(T *o)
+template <typename T> bool CheckHifDescription::_checkInstantiate(T *o)
 {
     if (!_opt.checkInstantiate)
         return true;
@@ -2577,7 +2571,7 @@ void CheckHifDescription::_printError(const std::string &message, Object &o)
     if (_opt.exitOnErrors) {
         messageError(message, &o, _sem);
     } else {
-        const std::string msg("CHECK HIF - ERROR! " + message);
+        const std::string &msg("CHECK HIF - ERROR! " + message);
         messageDebug(msg, &o, _sem);
     }
 }
@@ -2602,7 +2596,7 @@ void CheckHifDescription::_printError(
         Object *involved = *i;
         std::stringstream ss;
         ss << index;
-        const std::string listMessageIndex(listMessage + " #" + ss.str());
+        std::string listMessageIndex(listMessage + " #" + ss.str());
         messageWarning(listMessageIndex, involved, _sem);
     }
 

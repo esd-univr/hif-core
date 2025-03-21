@@ -915,7 +915,7 @@ bool MoveVisitor::_isSystemCStandardLibrary(LibraryDef *o)
     if (!o->isStandard())
         return false;
     std::string s(o->getName());
-    const std::string prefix("hif_systemc_");
+    std::string prefix("hif_systemc_");
     if (s.substr(0, prefix.size()) != prefix)
         return false;
     s = s.substr(prefix.size());

@@ -87,69 +87,6 @@ auto _fmemopen(const char *buffer, int size, const char *mode, const char * /*pa
 
 } // namespace
 
-auto hif_strcasecmp(const char *s1, const char *s2) -> int
-{
-#if (defined _WIN32)
-    return _stricmp(s1, s2);
-#else
-    return strcasecmp(s1, s2);
-#endif
-}
-
-auto hif_strncasecmp(const char *s1, const char *s2, const size_t size) -> int
-{
-#if (defined _WIN32)
-    return _strnicmp(s1, s2, size);
-#else
-    return strncasecmp(s1, s2, size);
-#endif
-}
-
-auto hif_strtoll(const char *s1, char **s2, int base) -> long long
-{
-#if (defined _WIN32)
-    return strtol(s1, s2, base);
-#else
-    return strtoll(s1, s2, base);
-#endif
-}
-
-auto hif_getcwd(char *buf, size_t size) -> char *
-{
-#if (defined _WIN32)
-    return _getcwd(buf, static_cast<int>(size));
-#else
-    return getcwd(buf, size);
-#endif
-}
-
-auto hif_chmod(const char *path, int m) -> int
-{
-#if (defined _WIN32)
-    return _chmod(path, m);
-#else
-    return chmod(path, static_cast<__mode_t>(m));
-#endif
-}
-
-auto hif_chdir(const char *path) -> int
-{
-#if (defined _WIN32)
-    return _chdir(path);
-#else
-    return chdir(path);
-#endif
-}
-
-auto hif_rmdir(const char *path) -> int
-{
-#if (defined _WIN32)
-    return _rmdir(path);
-#else
-    return rmdir(path);
-#endif
-}
-
 auto hif_mkdir(const char *path, int mode) -> int
 {
 // Also for MinGW

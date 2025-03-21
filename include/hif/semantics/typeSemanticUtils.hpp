@@ -113,7 +113,7 @@ bool isSubType(
 /// false otherwise.
 ///
 
-bool isSemanticsType(Type *t);
+bool isSemanticsType(const Type *t);
 
 } // namespace semantics
 } // namespace hif
