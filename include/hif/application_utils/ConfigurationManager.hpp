@@ -5,9 +5,10 @@
 /// configuration files with sections, directives, variables, and comments. It
 /// supports reading and writing configuration files, modifying their contents
 /// programmatically, and performing validation checks.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 
@@ -220,22 +221,36 @@ protected:
     /// @{
 
     /// @brief Parses a single line of the configuration file.
+    /// @param line The line to parse.
+    /// @return False on error.
     auto _parseLine(const std::string &line) -> bool;
 
     /// @brief Parses a comment line.
+    /// @param s The comment line.
+    /// @return False on error.
     static auto _parseComment(const std::string &s) -> bool;
 
     /// @brief Parses a section header.
+    /// @param s The section header.
+    /// @return False on error.
     auto _parseSection(const std::string &s) -> bool;
 
     /// @brief Parses a directive line.
+    /// @param s The directive line.
+    /// @return False on error.
     auto _parseDirective(const std::string &s) -> bool;
 
     /// @brief Parses a variable line.
+    /// @param s The variable line.
+    /// @return False on error.
     auto _parseVariable(const std::string &s) -> bool;
 
     /// @brief Parses values associated with a key.
+    /// @param key The key to associate the values with.
+    /// @param s The string containing the values.
+    /// @param isDirective True if the key is a directive, false otherwise.
     void _parseValues(const std::string &key, const std::string &s, bool isDirective);
+    
     /// @}
 
     Sections _sections;               ///< Map of sections in the configuration.

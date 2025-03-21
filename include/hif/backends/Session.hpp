@@ -1,6 +1,7 @@
 /// @file Session.hpp
 /// @brief
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 
@@ -152,7 +153,7 @@ class CSession
 public:
     /// @brief List of sub-directories
     /// (applied on a design unit or a library def directory)
-    enum Suffix_T : unsigned char {
+    enum Suffix : unsigned char {
         SRC, ///< "src" source directory
         INC, ///< "inc" include directory
         DOC, ///< "doc" documentation directory
@@ -160,6 +161,7 @@ public:
         EXE, ///< "exe" executable directory
         OBJ  ///< "obj" object .o directory
     };
+    
     /// @brief List of sub-directories
     /// (applied on a design unit or a library def directory)
     static const char *const CSuffix[];

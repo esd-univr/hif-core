@@ -4,9 +4,10 @@
 /// Provides functionality to create deep or shallow copies of HIF objects and
 /// lists of objects. Copy behavior can be customized through the `CopyOptions`
 /// struct.
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 

@@ -1,8 +1,9 @@
 /// @file backendManipulations.hpp
 /// @brief
-/// @copyright (c) 2024-2025 Electronic Systems Design (ESD) Lab @ UniVR This
-/// file is distributed under the BSD 2-Clause License. See LICENSE.md for
-/// details.
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
+/// This file is distributed under the BSD 2-Clause License.
+/// See LICENSE.md for details.
 
 #pragma once
 
@@ -21,7 +22,6 @@ namespace backends
 /// @param skip The number of parameters to not check (starting from the method
 ///             first parameter).
 /// @param removeCastOnOutputs when true remove cast on outputs. Default is false
-
 void makeParametersAssignable(
     ProcedureCall *call,
     hif::semantics::ILanguageSemantics *sem,
@@ -37,7 +37,6 @@ void makeParametersAssignable(
 /// @param skip The number of parameters to not check (starting from the method
 ///             first parameter).
 /// /// @param removeCastOnOutputs when true remove cast on outputs. Default is false
-
 void makeParametersAssignable(
     FunctionCall *call,
     hif::semantics::ILanguageSemantics *sem,
@@ -53,21 +52,17 @@ void makeParametersAssignable(
 /// @param originalType The type to be preserved.
 /// @return True if a cast has been added.
 ///
-
 bool addEventualCast(Value *v, Type *valueType, Type *originalType);
 
 /// @brief Introduces a library and the matching LibraryDef into given scope and system.
 /// - The scope is used as starting object to get the actual scope into which add the library.
 /// - The given name of the library must be complete. E.g. "hif_systemc_sc_core".
-///
 /// @param libName The library name.
 /// @param scope The scope into which add the library. If nullptr library is not added.
 /// @param system The system into which add the LibraryDef.
 /// @param sem The reference semantics.
 /// @param standard If <tt>true</tt> the inclusion is created as standard.
 /// @return True if the library has been added.
-///
-
 bool addHifLibrary(
     const std::string &libName,
     Object *scope,
@@ -81,9 +76,8 @@ bool addHifLibrary(
 /// @param toInclude The scope to be reached.
 /// @param cppHeaderExtension The c++ header extension.
 /// @param sem The semantics.
+/// @return The include path.
 /// @todo Added language scope strings and separators.
-///
-
 std::string calculateIncludePath(
     Scope *where,
     Scope *toInclude,
