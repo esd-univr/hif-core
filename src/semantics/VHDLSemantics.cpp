@@ -20,12 +20,12 @@
 #include "hif/semantics/semantics.hpp"
 
 #ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-member-function"
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
+#    pragma clang diagnostic push
+#    pragma clang diagnostic ignored "-Wunused-member-function"
+#    pragma clang diagnostic ignored "-Wmissing-noreturn"
 #elif defined __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-function"
+#    pragma GCC diagnostic push
+#    pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
 namespace hif
@@ -2941,10 +2941,8 @@ Value *VHDLSemantics::explicitCast(Value *valueToCast, Type *castType, Type *src
     return ret;
 }
 
-long long VHDLSemantics::transformRealToInt(const double v)
-{
-    return static_cast<long long>(application_utils::hif_round(v));
-}
+long long VHDLSemantics::transformRealToInt(const double v) { return std::llround(v); }
+
 Type *VHDLSemantics::isTypeAllowedAsBound(Type *t)
 {
     messageAssert(t != nullptr, "Passed nullptr type", nullptr, this);

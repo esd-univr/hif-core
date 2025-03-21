@@ -85,79 +85,19 @@ namespace application_utils
 /// @param path Path to the directory to create.
 /// @param mode Permissions mode for the new directory.
 /// @return 0 on success, or -1 on failure.
-
 auto hif_mkdir(const char *path, int mode) -> int;
 
 /// @brief Duplicates a string.
 /// @param s The string to duplicate.
 /// @return Pointer to the newly allocated string, or nullptr on failure.
-
 auto hif_strdup(const char *s) -> char *;
-
-/// @brief Gets the file descriptor of a file stream.
-/// @param f The file stream.
-/// @return The file descriptor, or -1 on failure.
-
-auto hif_fileno(FILE *f) -> int;
-
-/// @brief Checks if the file descriptor refers to a terminal.
-/// @param fd The file descriptor.
-/// @return Non-zero if the file descriptor refers to a terminal, 0 otherwise.
-
-auto hif_isatty(int fd) -> int;
-
-/// @brief Checks if a given mode corresponds to a directory.
-/// @param mode The mode to check.
-/// @return Non-zero if the mode corresponds to a directory, 0 otherwise.
-
-auto hif_isdir(unsigned int mode) -> int;
-
-/// @brief Checks if a given mode corresponds to a symbolic link.
-/// @param mode The mode to check.
-/// @return Non-zero if the mode corresponds to a symbolic link, 0 otherwise.
-
-auto hif_islink(unsigned int mode) -> int;
-
-/// @brief Gets the size of a file from its stat structure.
-/// @param s The stat structure of the file.
-/// @return The size of the file in bytes.
-
-auto hif_getfilesize(struct stat &s) -> int;
-
-/// @brief Creates a symbolic link.
-/// @param s1 Path to the target file.
-/// @param s2 Path to the symbolic link to create.
-/// @return 0 on success, or -1 on failure.
-
-auto hif_symlink(const char *s1, const char *s2) -> int;
-
-/// @brief Rounds a double to the nearest integer value.
-/// @param d The double value to round.
-/// @return The rounded value as a double.
-
-auto hif_round(double d) -> double;
-
-/// @brief Calculates the base-2 logarithm of a double.
-/// @param d The double value.
-/// @return The base-2 logarithm of the value.
-
-auto hif_log2(double d) -> double;
 
 /// @brief Opens a memory buffer as a file stream.
 /// @param buffer The memory buffer.
 /// @param size The size of the buffer.
 /// @param mode The file mode (e.g., "r", "w").
-/// @param path Path for the memory file (used for debugging or symbolic purposes).
 /// @return Pointer to the opened file stream, or nullptr on failure.
-
-auto hif_fmemopen(const char *buffer, int size, const char *mode, const char *path) -> FILE *;
-
-/// @brief Opens a file descriptor as a file stream.
-/// @param fd The file descriptor.
-/// @param mode The file mode (e.g., "r", "w").
-/// @return Pointer to the opened file stream, or nullptr on failure.
-
-auto hif_fdopen(int fd, const char *mode) -> FILE *;
+auto hif_fmemopen(const char *buffer, int size, const char *mode) -> FILE *;
 
 /// @brief Gets the current time as a string.
 /// @return The current time as a string in HH:MM:SS format.
