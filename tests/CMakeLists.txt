@@ -56,3 +56,17 @@ target_link_libraries(hif_simplified_symbol_verilog_integers_test PRIVATE hif::h
 target_compile_features(hif_simplified_symbol_verilog_integers_test PRIVATE cxx_std_17)
 
 add_test(NAME hif_simplified_symbol_verilog_integers COMMAND hif_simplified_symbol_verilog_integers_test)
+
+# Regression (hif-core#20): HifFactory::library's file-name parameter is a
+# `const std::string &`, and nine call sites passed a literal `nullptr` for it.
+# Constructing a std::string from a null char* threw std::logic_error out of
+# the package constructor, so std.textio, ieee.std_logic_textio and
+# ieee.std_logic_misc could not be built at all and the process terminated.
+# See vhdl_standard_package_construction_test.cpp.
+add_executable(vhdl_standard_package_construction_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/vhdl_standard_package_construction_test.cpp)
+target_include_directories(vhdl_standard_package_construction_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(vhdl_standard_package_construction_test PRIVATE hif::hif)
+target_compile_features(vhdl_standard_package_construction_test PRIVATE cxx_std_17)
+
+add_test(NAME vhdl_standard_package_construction COMMAND vhdl_standard_package_construction_test)
