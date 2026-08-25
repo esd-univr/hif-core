@@ -1134,7 +1134,7 @@ LibraryDef *VHDLSemantics::getIeeeStdLogicMiscPackage(bool hifFormat)
     Range *retRange     = new Range(new Identifier("left1"), new Identifier("right1"), dir_downto);
     TypeReference *ux01 = factory.typeRef(
         _makeHifName("ux01", hifFormat).c_str(),
-        factory.library(_makeHifName("ieee_std_logic_1164", hifFormat).c_str(), nullptr, nullptr, false, true));
+        factory.library(_makeHifName("ieee_std_logic_1164", hifFormat).c_str(), nullptr, "", false, true));
 
     // ///////////////////////////////////////////////////////////////////
     // attributes
@@ -1414,7 +1414,7 @@ LibraryDef *VHDLSemantics::getIeeeStdLogicTextIOPackage(bool hifFormat)
         factory.setSemantics(HIFSemantics::getInstance());
 
     ld->libraries.push_back(
-        factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, nullptr, false, true));
+        factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, "", false, true));
     Range *tpRange          = new Range(new Identifier("left"), new Identifier("right"), dir_downto);
     Bitvector *logicVector  = factory.bitvector(hif::copy(tpRange), true, true);
     Bitvector *uLogicVector = factory.bitvector(hif::copy(tpRange), true, false);
@@ -1423,12 +1423,12 @@ LibraryDef *VHDLSemantics::getIeeeStdLogicTextIOPackage(bool hifFormat)
     Parameter *line      = factory.parameter( // check inout
         factory.typeRef(
             _makeHifName("line", hifFormat).c_str(),
-            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, nullptr, false, true)),
+            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, "", false, true)),
         "param1");
     Parameter *justified = factory.parameter(
         factory.typeRef(
             _makeHifName("side", hifFormat).c_str(),
-            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, nullptr, false, true)),
+            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, "", false, true)),
         "param3",
         factory.fieldRef(
             factory.libraryInstance(_makeHifName("std_textio", hifFormat).c_str(), false, true),
@@ -1436,7 +1436,7 @@ LibraryDef *VHDLSemantics::getIeeeStdLogicTextIOPackage(bool hifFormat)
     Parameter *field = factory.parameter(
         factory.typeRef(
             _makeHifName("width", hifFormat).c_str(),
-            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, nullptr, false, true)),
+            factory.library(_makeHifName("std_textio", hifFormat).c_str(), nullptr, "", false, true)),
         "param4", factory.intval(0));
 
     // ///////////////////////////////////////////////////////////////////
@@ -1904,11 +1904,11 @@ LibraryDef *VHDLSemantics::getTextIOPackage(bool hifFormat)
 
     TypeReference *file_open_kind = factory.typeRef(
         _makeHifName("file_open_kind", hifFormat).c_str(),
-        _factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, nullptr, false, true));
+        _factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, "", false, true));
 
     TypeReference *file_open_status = factory.typeRef(
         _makeHifName("file_open_status", hifFormat).c_str(),
-        _factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, nullptr, false, true));
+        _factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, "", false, true));
 
     FieldReference *read_mode = _factory.fieldRef(
         _factory.libraryInstance(_makeHifName("standard", hifFormat).c_str(), false, true),
@@ -2186,7 +2186,7 @@ LibraryDef *VHDLSemantics::getTextIOPackage(bool hifFormat)
          factory.parameter(
              factory.typeRef(
                  _makeHifName("time_units", hifFormat).c_str(),
-                 factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, nullptr, false, true)),
+                 factory.library(_makeHifName("standard", hifFormat).c_str(), nullptr, "", false, true)),
              "param5",
              factory.fieldRef(
                  factory.libraryInstance(_makeHifName("standard", hifFormat).c_str(), false, true),
