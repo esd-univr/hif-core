@@ -97,3 +97,18 @@ target_link_libraries(for_generate_step_expansion_test PRIVATE hif::hif)
 target_compile_features(for_generate_step_expansion_test PRIVATE cxx_std_17)
 
 add_test(NAME for_generate_step_expansion COMMAND for_generate_step_expansion_test)
+
+# Regression (hif-core#22): TerminalPrefixOptions had no default member
+# initializers, so the defaults its header documents did not exist - the
+# default argument value-initialized every flag to false, the opposite of the
+# documented value for three of them - and a default-initialized local left
+# every member a call site did not assign indeterminate. The first half is what
+# made hif2vhdl abort on any bit-select or part-select assignment target
+# (hif-backend#103). See terminal_prefix_options_defaults_test.cpp.
+add_executable(terminal_prefix_options_defaults_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/terminal_prefix_options_defaults_test.cpp)
+target_include_directories(terminal_prefix_options_defaults_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(terminal_prefix_options_defaults_test PRIVATE hif::hif)
+target_compile_features(terminal_prefix_options_defaults_test PRIVATE cxx_std_17)
+
+add_test(NAME terminal_prefix_options_defaults COMMAND terminal_prefix_options_defaults_test)
