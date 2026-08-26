@@ -5001,7 +5001,7 @@ int SystemCTemplateTypeVisitor::visitTime(Time & /*o*/)
         (hifFactory.field(hifFactory.integer(hifFactory.range(63, 0)), "value", nullptr),
          hifFactory.field(
              hifFactory.typeRef(
-                 "hif_systemc_sc_time_unit", hifFactory.library("hif_systemc_sc_core", nullptr, nullptr, false, true)),
+                 "hif_systemc_sc_time_unit", hifFactory.library("hif_systemc_sc_core", nullptr, "", false, true)),
              "unit", nullptr)));
 
     _result = currRec->setType(nullptr);

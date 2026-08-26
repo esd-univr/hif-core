@@ -31,6 +31,73 @@ double log2(double d) { return log(d) / log(2.0); }
 #    pragma GCC diagnostic ignored "-Wswitch-enum"
 #endif
 
+/// @brief Reduces a constant bit string with a reduction operator.
+///
+/// The dominance order is IEEE 1164's tables rather than a simplification of
+/// them: `U or 1` is '1' and `U and 0` is '0', because a forcing value settles
+/// the result whatever it is combined with, while every other combination
+/// involving 'U' stays 'U'. So the absorbing element is tested first, then
+/// 'U', then 'X'. Exclusive-or has no absorbing element, so any bit without a
+/// logic level decides it.
+///
+/// 'Z', 'W' and '-' carry no logic level and reduce as 'X' does, which is the
+/// reading `op_bnot` already takes of them in map(BitvectorValue *).
+///
+/// @param bits The constant's bit string.
+/// @param oper The reduction operator.
+/// @param reduced Set to the reduced bit when this returns true.
+/// @return True when the reduction is defined; false leaves the caller's
+///         expression unsimplified rather than folding it to a guess.
+auto reduceConstantBits(const std::string &bits, const hif::Operator oper, hif::BitConstant &reduced) -> bool
+{
+    if (bits.empty()) {
+        return false;
+    }
+
+    bool hasUndefined = false; // 'U'
+    bool hasUnknown   = false; // 'X', 'Z', 'W', '-'
+    bool hasZero      = false;
+    bool hasOne       = false;
+    bool oddOnes      = false;
+
+    for (const char bit : bits) {
+        switch (bit) {
+        case '0':
+        case 'L':
+            hasZero = true;
+            break;
+        case '1':
+        case 'H':
+            hasOne  = true;
+            oddOnes = !oddOnes;
+            break;
+        case 'U':
+            hasUndefined = true;
+            break;
+        case 'X':
+        case 'Z':
+        case 'W':
+        case '-':
+            hasUnknown = true;
+            break;
+        default:
+            return false;
+        }
+    }
+
+    if (oper == hif::op_orrd) {
+        reduced = hasOne ? hif::bit_one : (hasUndefined ? hif::bit_u : (hasUnknown ? hif::bit_x : hif::bit_zero));
+    } else if (oper == hif::op_andrd) {
+        reduced = hasZero ? hif::bit_zero : (hasUndefined ? hif::bit_u : (hasUnknown ? hif::bit_x : hif::bit_one));
+    } else if (oper == hif::op_xorrd) {
+        reduced = hasUndefined ? hif::bit_u : (hasUnknown ? hif::bit_x : (oddOnes ? hif::bit_one : hif::bit_zero));
+    } else {
+        return false;
+    }
+
+    return true;
+}
+
 // ///////////////////////////////////////////////////////////////////
 // SimpifyMapData
 // ///////////////////////////////////////////////////////////////////
@@ -1242,9 +1309,12 @@ void SimplifyMap::map(BitvectorValue *v1)
         return;
     }
 
-    if (_data.oper == op_andrd || _data.oper == op_orrd || _data.oper == op_xorrd) {
-        // TODO
-        return;
+    if (hif::operatorIsReduce(_data.oper)) {
+        BitConstant reduced = bit_x;
+        if (!reduceConstantBits(v1->getValue(), _data.oper, reduced)) {
+            return;
+        }
+        _data.result = _factory.bitval(reduced);
     }
 
     _setConstValueResult(_data.result, v1, nullptr);
@@ -1310,6 +1380,31 @@ void SimplifyMap::map(IntValue *v1)
         IntValue *rVal     = new IntValue();
         rVal->setValue(~value);
         _data.result = rVal;
+    } else if (hif::operatorIsReduce(_data.oper)) {
+        // A reduction is defined over the operand's bits, and how many of those
+        // there are comes from its type - not from the 64-bit host integer the
+        // value happens to be stored in. Asking transformConstant for the
+        // vector view is what supplies the right width, and it keeps the four-
+        // state reading in one place instead of duplicating it here.
+        //
+        // A Verilog `if` condition arrives in exactly this shape: the semantics
+        // wrap it as `or_reduce(<condition>)`, and for a constant condition the
+        // operand is an IntValue carrying a Bitvector type. Leaving it unfolded
+        // is what made an `if generate` with an else branch unresolvable
+        // (hif-frontend#32).
+        Type *type       = hif::semantics::getSemanticType(v1, _data.sem);
+        Type *baseType   = (type != nullptr) ? hif::semantics::getBaseType(type, false, _data.sem) : nullptr;
+        auto *vectorType = dynamic_cast<Bitvector *>(baseType);
+        if (vectorType != nullptr) {
+            auto *asVector = dynamic_cast<BitvectorValue *>(transformConstant(v1, vectorType, _data.sem));
+            if (asVector != nullptr) {
+                BitConstant reduced = bit_x;
+                if (reduceConstantBits(asVector->getValue(), _data.oper, reduced)) {
+                    _data.result = _factory.bitval(reduced);
+                }
+                delete asVector;
+            }
+        }
     }
 
     _setConstValueResult(_data.result, v1, nullptr);
