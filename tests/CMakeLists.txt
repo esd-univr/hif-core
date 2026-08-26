@@ -70,3 +70,16 @@ target_link_libraries(vhdl_standard_package_construction_test PRIVATE hif::hif)
 target_compile_features(vhdl_standard_package_construction_test PRIVATE cxx_std_17)
 
 add_test(NAME vhdl_standard_package_construction COMMAND vhdl_standard_package_construction_test)
+
+# Regression (hif-frontend#32): SimplifyMap never folded a reduction over a
+# constant - map(BitvectorValue *) carried a `// TODO` for op_andrd/op_orrd/
+# op_xorrd and map(IntValue *) had no reduction branch at all. Verilog lowers
+# `if (<cond>)` to `or_reduce(<cond>)`, so an `if generate` with an else branch
+# could not resolve its condition and aborted whenever generate expansion ran.
+# See constant_reduction_folding_test.cpp.
+add_executable(constant_reduction_folding_test ${CMAKE_CURRENT_SOURCE_DIR}/constant_reduction_folding_test.cpp)
+target_include_directories(constant_reduction_folding_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(constant_reduction_folding_test PRIVATE hif::hif)
+target_compile_features(constant_reduction_folding_test PRIVATE cxx_std_17)
+
+add_test(NAME constant_reduction_folding COMMAND constant_reduction_folding_test)
