@@ -16,15 +16,23 @@ namespace hif
 /// recurseInto* : True if the search must go into prefix of corresponding object.
 /// e.g. with recurseIntoFieldRefs = false:
 /// struct.field[index] -> return field, otherwise return struct.
+///
+/// Every member carries a default member initializer, so the documented
+/// defaults below hold for each of the three ways this struct is built: the
+/// default argument of getTerminalPrefix/setTerminalPrefix, a value-initialized
+/// object, and a plain default-initialized local that then overrides only the
+/// members it cares about. That last form is the common one at call sites, and
+/// it is why the initializers are required rather than merely tidy: without
+/// them the members a call site does not assign are indeterminate.
 struct TerminalPrefixOptions {
     /// Recurse within field references. Default is true.
-    bool recurseIntoFieldRefs;
+    bool recurseIntoFieldRefs{true};
     /// Recurse within member objects. Default is true.
-    bool recurseIntoMembers;
+    bool recurseIntoMembers{true};
     /// Recurse within slice objects. Default is true.
-    bool recurseIntoSlices;
+    bool recurseIntoSlices{true};
     /// Recurse within expressions having deref as operator. Default is false.
-    bool recurseIntoDerefExpressions;
+    bool recurseIntoDerefExpressions{false};
 };
 
 /// @brief This function returns the prefix of the given object.
