@@ -654,8 +654,11 @@ private:
     /// @param steps Refers to the same name field in For or ForGenerate.
     /// @param loops The reference to the variable storing the resulting
     /// number of iterations.
-    /// @param min The starting value.
-    /// @param max The final value.
+    /// @param min The smallest value taken by the index.
+    /// @param max The greatest value taken by the index.
+    /// @param step The (positive) distance between two consecutive values
+    /// taken by the index. The index takes exactly the values
+    /// min, min + step, ..., max, which are `loops` values.
     /// @return true if has been able to calculate the number of iterations,
     /// false otherwise.
     ///
@@ -666,12 +669,18 @@ private:
         BList<Action> &steps,
         std::int64_t &loops,
         std::int64_t &min,
-        std::int64_t &max);
+        std::int64_t &max,
+        std::int64_t &step);
 
     /// @brief Determines how many iterations are performed by a for statement
     /// (which may be a For or ForGenerate).
     /// Special case for Range condition.
-    bool _resolveForLoopBound_rangeCase(Value *condition, std::int64_t &loops, std::int64_t &min, std::int64_t &max);
+    bool _resolveForLoopBound_rangeCase(
+        Value *condition,
+        std::int64_t &loops,
+        std::int64_t &min,
+        std::int64_t &max,
+        std::int64_t &step);
 
     /// @brief Determines the end value of a for statement (which may be
     /// a For or ForGenerate).
@@ -691,10 +700,15 @@ private:
         std::int64_t &loops,
         std::int64_t &min,
         std::int64_t &max,
+        std::int64_t &step,
         Value *initVal,
         Expression *exprCond,
         Value *lastVal,
         Value *increment);
+
+    /// @brief Folds the given value to a compile-time integer constant.
+    /// @return true if the value is constant, false otherwise.
+    bool _resolveForLoopBound_getConstantInt(Value *v, std::int64_t &res);
 
     bool _isLoopWithControlActions(Object *loop);
 
@@ -1238,8 +1252,9 @@ template <typename T> bool SimplifyVisitor::_simplifyUselessFor(T *o)
 bool SimplifyVisitor::_simplifyConstantLoopFor(For *o)
 {
     // If only 1 loop is requested, move actions outside for statement.
-    std::int64_t iter, min, max;
-    if (!_resolveForLoopBound(o->initDeclarations, o->initValues, o->getCondition(), o->stepActions, iter, min, max)) {
+    std::int64_t iter, min, max, step;
+    if (!_resolveForLoopBound(
+            o->initDeclarations, o->initValues, o->getCondition(), o->stepActions, iter, min, max, step)) {
         return 0;
     }
 
@@ -4299,7 +4314,9 @@ bool SimplifyVisitor::_simplifyForGenerate(ForGenerate *o)
     std::int64_t iter = 0;
     std::int64_t max  = 0;
     std::int64_t min  = 0;
-    if (!_resolveForLoopBound(o->initDeclarations, o->initValues, o->getCondition(), o->stepActions, iter, min, max)) {
+    std::int64_t step = 0;
+    if (!_resolveForLoopBound(
+            o->initDeclarations, o->initValues, o->getCondition(), o->stepActions, iter, min, max, step)) {
         messageDebugAssert(!_opt.simplify_generates, "Cannot resolve for generate loop bound", o, _sem);
         return false;
     }
@@ -4327,7 +4344,11 @@ bool SimplifyVisitor::_simplifyForGenerate(ForGenerate *o)
     // component_0_1
     // component_1_0
     // ...
-    for (std::int64_t i = min; i <= max; ++i) {
+    // The index advances by the loop's own step: substituting consecutive
+    // integers would elaborate a different design whenever the step is not one.
+    // The suffix keeps following the substituted value, as it always has -- it
+    // is not the iteration ordinal, and for a step-1 loop nothing changes.
+    for (std::int64_t i = min; i <= max; i += step) {
         std::stringstream ss;
         ss << "_" << i;
         std::string suffix;
@@ -4461,7 +4482,8 @@ bool SimplifyVisitor::_resolveForLoopBound(
     BList<Action> &steps,
     std::int64_t &loops,
     std::int64_t &min,
-    std::int64_t &max)
+    std::int64_t &max,
+    std::int64_t &step)
 {
     if (_opt.simplify_statements) {
         SimplifyOptions localOpts(_opt);
@@ -4474,7 +4496,7 @@ bool SimplifyVisitor::_resolveForLoopBound(
 
     // Special management if condition is a range.
     if (dynamic_cast<Range *>(condition) != nullptr) {
-        return _resolveForLoopBound_rangeCase(condition, loops, min, max);
+        return _resolveForLoopBound_rangeCase(condition, loops, min, max, step);
     }
 
     // Assuming that loop is based on one index only, otherwise
@@ -4525,7 +4547,7 @@ bool SimplifyVisitor::_resolveForLoopBound(
     messageAssert(increment != nullptr, "Unexpected for case (6)", condition->getParent(), _sem);
 
     // Calculate number of iterations.
-    bool ret = _resolveForLoopBound_calculateIterations(loops, min, max, initVal, exprCond, lastVal, increment);
+    bool ret = _resolveForLoopBound_calculateIterations(loops, min, max, step, initVal, exprCond, lastVal, increment);
     delete increment;
     return ret;
 }
@@ -4534,8 +4556,11 @@ bool SimplifyVisitor::_resolveForLoopBound_rangeCase(
     Value *condition,
     std::int64_t &loops,
     std::int64_t &min,
-    std::int64_t &max)
+    std::int64_t &max,
+    std::int64_t &step)
 {
+    // A range condition spans every value between its bounds.
+    step     = 1;
     Range *r = static_cast<Range *>(condition);
     loops    = static_cast<std::int64_t>(hif::semantics::spanGetBitwidth(r, _sem));
     if (loops == 0)
@@ -4642,74 +4667,12 @@ Value *SimplifyVisitor::_resolveForLoopBound_getSteps(
     return hif::copy(increment);
 }
 
-bool SimplifyVisitor::_resolveForLoopBound_calculateIterations(
-    std::int64_t &loops,
-    std::int64_t &min,
-    std::int64_t &max,
-    Value *initVal,
-    Expression *exprCond,
-    Value *lastVal,
-    Value *increment)
+bool SimplifyVisitor::_resolveForLoopBound_getConstantInt(Value *v, std::int64_t &res)
 {
-    hif::HifFactory f;
-    f.setSemantics(_sem);
-
-    Value *minBound      = nullptr;
-    Expression *loopExpr = new Expression();
-
-    // Assuming that a <, <= operation correspond to an increment in step
-    // action(s), and vice-versa.
-    if (exprCond->getOperator() == op_lt) {
-        loopExpr->setValue1(hif::copy(lastVal));
-        loopExpr->setValue2(hif::copy(initVal));
-        loopExpr->setOperator(op_minus);
-        minBound = hif::copy(initVal);
-    } else if (exprCond->getOperator() == op_le) {
-        Expression *sub = new Expression();
-        sub->setValue1(hif::copy(lastVal));
-        sub->setValue2(hif::copy(initVal));
-        sub->setOperator(op_minus);
-
-        loopExpr->setValue1(sub);
-        loopExpr->setValue2(f.intval(1));
-        loopExpr->setOperator(op_plus);
-        minBound = hif::copy(initVal);
-    } else if (exprCond->getOperator() == op_gt) {
-        loopExpr->setValue1(hif::copy(initVal));
-        loopExpr->setValue2(hif::copy(lastVal));
-        loopExpr->setOperator(op_minus);
-        minBound = hif::copy(lastVal);
-    } else if (exprCond->getOperator() == op_ge) {
-        Expression *sub = new Expression();
-        sub->setValue1(hif::copy(initVal));
-        sub->setValue2(hif::copy(lastVal));
-        sub->setOperator(op_minus);
-
-        loopExpr->setValue1(sub);
-        loopExpr->setValue2(f.intval(1));
-        loopExpr->setOperator(op_plus);
-        minBound = hif::copy(lastVal);
-    } else {
-        //messageDebugAssert(false, "Unexpected expr condition", exprCond, nullptr);
-        delete loopExpr;
-        return false;
-    }
-
-    Expression *e = new Expression();
-    e->setValue1(loopExpr);
-    e->setValue2(hif::copy(increment));
-    e->setOperator(op_div);
-
-    if (hif::semantics::getSemanticType(e, _sem) == nullptr) {
-        delete minBound;
-        delete e;
-        return false;
-    }
-
     SimplifyOptions opt;
-    Value *res          = simplify(e, _sem, opt);
-    IntValue *ivo       = dynamic_cast<IntValue *>(res);
-    BitvectorValue *bvo = dynamic_cast<BitvectorValue *>(res);
+    Value *simplified   = simplify(hif::copy(v), _sem, opt);
+    IntValue *ivo       = dynamic_cast<IntValue *>(simplified);
+    BitvectorValue *bvo = dynamic_cast<BitvectorValue *>(simplified);
 
     if (bvo != nullptr) {
         Int *intType    = _factory.integer(new Range(63, 0), true, true);
@@ -4721,43 +4684,93 @@ bool SimplifyVisitor::_resolveForLoopBound_calculateIterations(
                 delete cvo;
         }
         delete bvo;
-        res = ivo;
+        simplified = ivo;
     }
 
     if (ivo == nullptr) {
-        delete minBound;
-        delete res;
+        delete simplified;
         return false;
     }
-    loops = ivo->getValue();
+
+    res = ivo->getValue();
     delete ivo;
+    return true;
+}
 
-    // Setting min and max:
-    Value *resMin          = simplify(minBound, _sem, opt);
-    IntValue *ivoMin       = dynamic_cast<IntValue *>(resMin);
-    BitvectorValue *bvoMin = dynamic_cast<BitvectorValue *>(resMin);
+bool SimplifyVisitor::_resolveForLoopBound_calculateIterations(
+    std::int64_t &loops,
+    std::int64_t &min,
+    std::int64_t &max,
+    std::int64_t &step,
+    Value *initVal,
+    Expression *exprCond,
+    Value *lastVal,
+    Value *increment)
+{
+    std::int64_t initI = 0;
+    std::int64_t lastI = 0;
+    std::int64_t stepI = 0;
 
-    if (bvoMin != nullptr) {
-        Int *intType    = _factory.integer(new Range(63, 0), true, true);
-        ConstValue *cvo = hif::manipulation::transformConstant(bvoMin, intType, _sem);
-        delete intType;
-        if (cvo != nullptr) {
-            ivoMin = dynamic_cast<IntValue *>(cvo);
-            if (ivoMin == nullptr)
-                delete cvo;
-        }
-        delete bvoMin;
-        resMin = ivoMin;
-    }
+    // The bound arithmetic is done on plain integers rather than on a HIF
+    // expression tree: the tree carried a division, which for a span that is
+    // not a multiple of the step failed to fold to an IntValue and made the
+    // whole resolution fail.
+    if (!_resolveForLoopBound_getConstantInt(initVal, initI))
+        return false;
+    if (!_resolveForLoopBound_getConstantInt(lastVal, lastI))
+        return false;
+    if (!_resolveForLoopBound_getConstantInt(increment, stepI))
+        return false;
 
-    if (ivoMin == nullptr) {
-        delete resMin;
+    // _resolveForLoopBound_getSteps() returns the magnitude of the step and has
+    // already checked it against the condition operator, which is what carries
+    // the direction. A non-positive magnitude would never reach the bound.
+    if (stepI <= 0)
+        return false;
+
+    // Distance the index has to cover, and whether it may land on the bound.
+    // op_lt/op_le count upwards from initVal, op_gt/op_ge downwards.
+    std::int64_t span = 0;
+    bool inclusive    = false;
+    bool ascending    = true;
+    if (exprCond->getOperator() == op_lt) {
+        span = lastI - initI;
+    } else if (exprCond->getOperator() == op_le) {
+        span      = lastI - initI;
+        inclusive = true;
+    } else if (exprCond->getOperator() == op_gt) {
+        span      = initI - lastI;
+        ascending = false;
+    } else if (exprCond->getOperator() == op_ge) {
+        span      = initI - lastI;
+        inclusive = true;
+        ascending = false;
+    } else {
         return false;
     }
 
-    min = ivoMin->getValue();
-    max = min + loops - 1;
-    delete ivoMin;
+    step = stepI;
+
+    // The loop body never runs: the condition is already false at the initial
+    // value.
+    if (span < 0 || (span == 0 && !inclusive)) {
+        loops = 0;
+        min   = initI;
+        max   = initI;
+        return true;
+    }
+
+    // Number of values initI + k * stepI, k >= 0, that still satisfy the
+    // condition. span is non-negative here, so the truncating division is a
+    // floor.
+    loops = inclusive ? (span / stepI) + 1 : ((span - 1) / stepI) + 1;
+
+    // Setting min and max: the index takes `loops` values starting from initI,
+    // so the far end is that many steps away -- it is not the condition bound,
+    // which the index need not land on exactly.
+    const std::int64_t reach = (loops - 1) * stepI;
+    min                      = ascending ? initI : initI - reach;
+    max                      = ascending ? initI + reach : initI;
 
     return true;
 }
