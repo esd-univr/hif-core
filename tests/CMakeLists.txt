@@ -83,3 +83,17 @@ target_link_libraries(constant_reduction_folding_test PRIVATE hif::hif)
 target_compile_features(constant_reduction_folding_test PRIVATE cxx_std_17)
 
 add_test(NAME constant_reduction_folding COMMAND constant_reduction_folding_test)
+
+# Regression (hif-core#24): expanding a `for generate` substituted the
+# iteration ordinal for the genvar, so a loop over 0, 2, 4 was elaborated as
+# 0, 1, 2 - a different design, with exit status 0. The same arithmetic
+# truncated the iteration count for a span that is not a multiple of the step,
+# and started an `op_gt` range one below the lowest value the index reaches.
+# See for_generate_step_expansion_test.cpp.
+add_executable(for_generate_step_expansion_test
+    ${CMAKE_CURRENT_SOURCE_DIR}/for_generate_step_expansion_test.cpp)
+target_include_directories(for_generate_step_expansion_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_link_libraries(for_generate_step_expansion_test PRIVATE hif::hif)
+target_compile_features(for_generate_step_expansion_test PRIVATE cxx_std_17)
+
+add_test(NAME for_generate_step_expansion COMMAND for_generate_step_expansion_test)
